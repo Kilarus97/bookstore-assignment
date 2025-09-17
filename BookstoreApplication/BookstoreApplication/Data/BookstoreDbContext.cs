@@ -25,20 +25,29 @@ namespace BookstoreApplication.Data
                 .HasOne(b => b.Publisher)
                 .WithMany()
                 .HasForeignKey(b => b.PublisherId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Author>()
+                .Property(a => a.DateOfBirth)
+                .HasColumnName("Birthday");
 
             modelBuilder.Entity<AuthorAward>()
                 .HasKey(aa => new { aa.AuthorId, aa.AwardId });
+            modelBuilder.Entity<AuthorAward>()
+                .ToTable("AuthorAwardBridge");
 
             modelBuilder.Entity<AuthorAward>()
                 .HasOne(aa => aa.Author)
                 .WithMany(a => a.AuthorAwards)
-                .HasForeignKey(aa => aa.AuthorId);
+                .HasForeignKey(aa => aa.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade); // ← dodato
 
             modelBuilder.Entity<AuthorAward>()
                 .HasOne(aa => aa.Award)
                 .WithMany(a => a.AuthorAwards)
-                .HasForeignKey(aa => aa.AwardId);
+                .HasForeignKey(aa => aa.AwardId)
+                .OnDelete(DeleteBehavior.Cascade); // ← dodato
+
 
             base.OnModelCreating(modelBuilder);
         }
