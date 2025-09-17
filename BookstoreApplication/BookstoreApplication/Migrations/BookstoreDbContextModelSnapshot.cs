@@ -46,6 +46,48 @@ namespace BookstoreApplication.Migrations
                     b.ToTable("Authors");
                 });
 
+            modelBuilder.Entity("BookstoreApplication.Models.AuthorAward", b =>
+                {
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AwardId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("YearReceived")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AuthorId", "AwardId");
+
+                    b.HasIndex("AwardId");
+
+                    b.ToTable("AuthorAwards");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Award", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("YearEstablished")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Awards");
+                });
+
             modelBuilder.Entity("BookstoreApplication.Models.Book", b =>
                 {
                     b.Property<int>("Id")
@@ -108,6 +150,25 @@ namespace BookstoreApplication.Migrations
                     b.ToTable("Publishers");
                 });
 
+            modelBuilder.Entity("BookstoreApplication.Models.AuthorAward", b =>
+                {
+                    b.HasOne("BookstoreApplication.Models.Author", "Author")
+                        .WithMany("AuthorAwards")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookstoreApplication.Models.Award", "Award")
+                        .WithMany("AuthorAwards")
+                        .HasForeignKey("AwardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Award");
+                });
+
             modelBuilder.Entity("BookstoreApplication.Models.Book", b =>
                 {
                     b.HasOne("BookstoreApplication.Models.Author", "Author")
@@ -125,6 +186,16 @@ namespace BookstoreApplication.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Author", b =>
+                {
+                    b.Navigation("AuthorAwards");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Award", b =>
+                {
+                    b.Navigation("AuthorAwards");
                 });
 #pragma warning restore 612, 618
         }
