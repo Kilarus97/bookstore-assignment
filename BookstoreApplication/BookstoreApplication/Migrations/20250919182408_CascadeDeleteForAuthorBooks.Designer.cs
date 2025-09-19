@@ -3,6 +3,7 @@ using System;
 using BookstoreApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     [DbContext(typeof(BookstoreDbContext))]
-    partial class BookstoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250919182408_CascadeDeleteForAuthorBooks")]
+    partial class CascadeDeleteForAuthorBooks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -477,7 +480,7 @@ namespace BookstoreApplication.Migrations
             modelBuilder.Entity("BookstoreApplication.Models.Book", b =>
                 {
                     b.HasOne("BookstoreApplication.Models.Author", "Author")
-                        .WithMany()
+                        .WithMany("Books")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -485,7 +488,7 @@ namespace BookstoreApplication.Migrations
                     b.HasOne("BookstoreApplication.Models.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -496,6 +499,8 @@ namespace BookstoreApplication.Migrations
             modelBuilder.Entity("BookstoreApplication.Models.Author", b =>
                 {
                     b.Navigation("AuthorAwards");
+
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookstoreApplication.Models.Award", b =>

@@ -44,7 +44,7 @@ namespace BookstoreApplication.Data
                 .HasOne(b => b.Publisher)
                 .WithMany()
                 .HasForeignKey(b => b.PublisherId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             modelBuilder.Entity<Author>()

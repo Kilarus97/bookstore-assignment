@@ -1,5 +1,6 @@
 ﻿using System;
 using BookstoreApplication.Data;
+using BookstoreApplication.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BookstoreDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
+builder.Services.AddScoped<BooksRepo>();
+builder.Services.AddScoped<AuthorsRepo>();
+builder.Services.AddScoped<PublishersRepo>();
 
 var app = builder.Build();
 
