@@ -1,47 +1,47 @@
-﻿using BookstoreApplication.Data;
+﻿    using BookstoreApplication.Data;
 using BookstoreApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Repository
 {
     public class AwardsRepo
     {
-        private BookstoreDbContext _context;
+        private readonly BookstoreDbContext _context;
 
         public AwardsRepo(BookstoreDbContext context)
         {
             _context = context;
         }
 
-        // Implement CRUD operations for Award entity here
-
-        public IEnumerable<Award> GetAllAwards()
+        public async Task<IEnumerable<Award>> GetAllAwardsAsync()
         {
-            return _context.Awards.ToList();
+            return await _context.Awards.ToListAsync();
         }
 
-        public Award GetAward(int id)
+        public async Task<Award?> GetAwardAsync(int id)
         {
-            return _context.Awards.Find(id);
+            return await _context.Awards.FindAsync(id);
         }
 
-        public void AddAward(Award award)
+        public async Task AddAwardAsync(Award award)
         {
-            _context.Awards.Add(award);
-            _context.SaveChanges();
+            await _context.Awards.AddAsync(award);
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateAward(Award award)
+        public async Task UpdateAwardAsync(Award award)
         {
             _context.Awards.Update(award);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void DeleteAward(int id)
+
+        public async Task DeleteAwardAsync(int id)
         {
-            var award = _context.Awards.Find(id);
+            var award = await _context.Awards.FindAsync(id);
             if (award != null)
             {
                 _context.Awards.Remove(award);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

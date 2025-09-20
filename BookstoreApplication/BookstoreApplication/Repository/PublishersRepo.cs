@@ -1,51 +1,48 @@
 ﻿using BookstoreApplication.Data;
 using BookstoreApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Repository
 {
     public class PublishersRepo
     {
-        private BookstoreDbContext _context;
+        private readonly BookstoreDbContext _context;
 
         public PublishersRepo(BookstoreDbContext context)
         {
             _context = context;
         }
 
-        // Implement CRUD operations for Publisher entity here
-        public IEnumerable<Publisher> GetAllPublishers()
+        public async Task<IEnumerable<Publisher>> GetAllPublishersAsync()
         {
-            return _context.Publishers.ToList();
+            return await _context.Publishers.ToListAsync();
         }
 
-        public Publisher GetPublisher(int id)
+        public async Task<Publisher?> GetPublisherAsync(int id)
         {
-            return _context.Publishers.Find(id);
+            return await _context.Publishers.FindAsync(id);
         }
 
-        public void AddPublisher(Publisher publisher)
+        public async Task AddPublisherAsync(Publisher publisher)
         {
-            _context.Publishers.Add(publisher);
-            _context.SaveChanges();
+            await _context.Publishers.AddAsync(publisher);
+            await _context.SaveChangesAsync();
         }
 
-
-        public void UpdatePublisher(Publisher publisher)
+        public async Task UpdatePublisherAsync(Publisher publisher)
         {
             _context.Publishers.Update(publisher);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeletePublisher(int id)
+        public async Task DeletePublisherAsync(int id)
         {
-            var publisher = _context.Publishers.Find(id);
+            var publisher = await _context.Publishers.FindAsync(id);
             if (publisher != null)
             {
                 _context.Publishers.Remove(publisher);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-
-        
     }
 }

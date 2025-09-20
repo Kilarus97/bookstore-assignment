@@ -1,4 +1,5 @@
 ﻿using BookstoreApplication.Data;
+using BookstoreApplication.DTO;
 using BookstoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,53 +7,61 @@ namespace BookstoreApplication.Repository
 {
     public class BooksRepo
     {
-        private BookstoreDbContext _context;
+        private readonly BookstoreDbContext _context;
 
         public BooksRepo(BookstoreDbContext context)
         {
             _context = context;
         }
 
-        // Implement CRUD operations for Book entity here
-
-        public IEnumerable<Book> GetAllBooks()
-        {
-            return _context.Books
+            public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
+            {
+                return await _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
-                .ToList();
+                .Select(b => new BookDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount,
+                    PublishedDate = b.PublishedDate,
+                    ISBN = b.ISBN,
+                    Author = b.Author != null ? b.Author.FullName : string.Empty,
+                    Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
+                    Website = b.Publisher != null ? b.Publisher.Website : string.Empty
+                })
+                .ToListAsync();
         }
 
-        public Book GetBook(int id)
+        public async Task<Book?> GetBookAsync(int id)
         {
-            return _context.Books
+            return await _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
-                .FirstOrDefault(b => b.Id == id);
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public void AddBook(Book book)
+        public async Task AddBookAsync(Book book)
         {
-            _context.Books.Add(book);
-            _context.SaveChanges();
+            await _context.Books.AddAsync(book);
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateBook(Book book)
+        public async Task UpdateBookAsync(Book book)
         {
             _context.Books.Update(book);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteBook(int id)
+        public async Task DeleteBookAsync(int id)
         {
-            var book = _context.Books.Find(id);
+            var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
                 _context.Books.Remove(book);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-
 
     }
 }

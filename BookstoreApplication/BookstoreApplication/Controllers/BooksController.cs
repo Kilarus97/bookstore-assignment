@@ -2,16 +2,14 @@
 using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Repository;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Threading.Tasks;
 
 namespace BookstoreApplication.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController : ControllerBase
     {
-
         private readonly BooksRepo _bookRepository;
         private readonly AuthorsRepo _authorRepository;
         private readonly PublishersRepo _publisherRepository;
@@ -23,19 +21,19 @@ namespace BookstoreApplication.Controllers
             _publisherRepository = publisherRepository;
         }
 
-
         // GET: api/books
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_bookRepository.GetAllBooks());
+            var books = await _bookRepository.GetAllBooksAsync();
+            return Ok(books);
         }
 
         // GET api/books/5
         [HttpGet("{id}")]
-        public IActionResult GetOne(int id)
+        public async Task<IActionResult> GetOne(int id)
         {
-            var book = _bookRepository.GetBook(id);
+            var book = await _bookRepository.GetBookAsync(id);
             if (book == null)
             {
                 return NotFound();
@@ -45,17 +43,17 @@ namespace BookstoreApplication.Controllers
 
         // POST api/books
         [HttpPost]
-        public IActionResult Post(Book book)
+        public async Task<IActionResult> Post(Book book)
         {
             // kreiranje knjige je moguće ako je izabran postojeći autor
-            var author = _authorRepository.GetAuthor(book.AuthorId);
+            var author = await _authorRepository.GetAuthorAsync(book.AuthorId);
             if (author == null)
             {
                 return BadRequest("Author not found.");
             }
 
             // kreiranje knjige je moguće ako je izabran postojeći izdavač
-            var publisher = _publisherRepository.GetPublisher(book.PublisherId);
+            var publisher = await _publisherRepository.GetPublisherAsync(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest("Publisher not found.");
@@ -63,39 +61,38 @@ namespace BookstoreApplication.Controllers
 
             book.Author = author;
             book.Publisher = publisher;
-            _bookRepository.AddBook(book);
+            await _bookRepository.AddBookAsync(book);
             return Ok(book);
         }
 
         // PUT api/books/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Book book)
+        public async Task<IActionResult> Put(int id, Book book)
         {
             if (id != book.Id)
             {
                 return BadRequest();
             }
 
-            var existingBook = _bookRepository.GetBook(id);
+            var existingBook = await _bookRepository.GetBookAsync(id);
             if (existingBook == null)
             {
                 return NotFound();
             }
 
             // izmena knjige je moguca ako je izabran postojeći autor
-            var author = _authorRepository.GetAuthor(book.AuthorId);
+            var author = await _authorRepository.GetAuthorAsync(book.AuthorId);
             if (author == null)
             {
                 return BadRequest();
             }
 
             // izmena knjige je moguca ako je izabran postojeći izdavač
-            var publisher = _publisherRepository.GetPublisher(book.PublisherId);
+            var publisher = await _publisherRepository.GetPublisherAsync(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest();
             }
-
 
             existingBook.Title = book.Title;
             existingBook.PageCount = book.PageCount;
@@ -105,16 +102,16 @@ namespace BookstoreApplication.Controllers
             existingBook.AuthorId = author.Id;
             existingBook.Publisher = publisher;
             existingBook.PublisherId = publisher.Id;
-            _bookRepository.UpdateBook(existingBook);
- 
+            await _bookRepository.UpdateBookAsync(existingBook);
+
             return Ok(existingBook);
         }
 
         // DELETE api/books/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _bookRepository.DeleteBook(id);
+            await _bookRepository.DeleteBookAsync(id);
             return NoContent();
         }
     }
