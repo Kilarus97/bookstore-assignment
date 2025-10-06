@@ -1,6 +1,5 @@
-﻿using BookstoreApplication.Data;
-using BookstoreApplication.Models;
-using BookstoreApplication.Repository;
+﻿using BookstoreApplication.Models;
+using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreApplication.Controllers
@@ -9,69 +8,54 @@ namespace BookstoreApplication.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly BooksRepo _bookRepository;
-        private readonly AuthorsRepo _authorRepository;
-        private readonly PublishersRepo _publisherRepository;
+        private readonly AuthorService _authorService;
 
-        public AuthorsController(BooksRepo bookRepository, AuthorsRepo authorRepository, PublishersRepo publisherRepository)
+        public AuthorsController(AuthorService authorService)
         {
-            _bookRepository = bookRepository;
-            _authorRepository = authorRepository;
-            _publisherRepository = publisherRepository;
+            _authorService = authorService;
         }
 
-        // GET: api/authors
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var authors = await _authorRepository.GetAllAuthorDtosAsync();
+            var authors = await _authorService.GetAllAsync();
             return Ok(authors);
         }
 
-        // GET api/authors/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            var author = await _authorRepository.GetAuthorAsync(id);
-            if (author == null)
-            {
-                return NotFound();
-            }
+            var author = await _authorService.GetOneAsync(id);
+            if (author == null) return NotFound();
             return Ok(author);
         }
 
-        // POST api/authors
         [HttpPost]
         public async Task<IActionResult> Post(Author author)
         {
-            await _authorRepository.AddAuthorAsync(author);
-            return Ok(author);
+            var created = await _authorService.CreateAsync(author);
+            return Ok(created);
         }
 
-        // PUT api/authors/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Author author)
         {
-            if (id != author.Id)
+            if (id != author.Id) return BadRequest();
+            try
             {
-                return BadRequest();
+                var updated = await _authorService.UpdateAsync(id, author);
+                return Ok(updated);
             }
-
-            var existingAuthor = await _authorRepository.GetAuthorAsync(id);
-            if (existingAuthor == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-
-            await _authorRepository.UpdateAuthorAsync(author);
-            return Ok(author);
         }
 
-        // DELETE api/authors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _authorRepository.DeleteAuthorAsync(id);
+            await _authorService.DeleteAsync(id);
             return NoContent();
         }
     }

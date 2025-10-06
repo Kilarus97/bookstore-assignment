@@ -1,10 +1,6 @@
-﻿using BookstoreApplication.Data;
-using BookstoreApplication.Models;
-using BookstoreApplication.Repository;
+﻿using BookstoreApplication.Models;
+using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookstoreApplication.Controllers
 {
@@ -12,65 +8,54 @@ namespace BookstoreApplication.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly BooksRepo _bookRepository;
-        private readonly AuthorsRepo _authorRepository;
-        private readonly PublishersRepo _publisherRepository;
+        private readonly PublisherService _publisherService;
 
-        public PublishersController(BooksRepo bookRepository, AuthorsRepo authorRepository, PublishersRepo publisherRepository)
+        public PublishersController(PublisherService publisherService)
         {
-            _bookRepository = bookRepository;
-            _authorRepository = authorRepository;
-            _publisherRepository = publisherRepository;
+            _publisherService = publisherService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var publishers = await _publisherRepository.GetAllPublishersAsync();
+            var publishers = await _publisherService.GetAllAsync();
             return Ok(publishers);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            var publisher = await _publisherRepository.GetPublisherAsync(id);
-            if (publisher == null)
-            {
-                return NotFound();
-            }
+            var publisher = await _publisherService.GetOneAsync(id);
+            if (publisher == null) return NotFound();
             return Ok(publisher);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(Publisher publisher)
         {
-            await _publisherRepository.AddPublisherAsync(publisher);
-            return Ok(publisher);
+            var created = await _publisherService.CreateAsync(publisher);
+            return Ok(created);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Publisher publisher)
         {
-            if (id != publisher.Id)
+            if (id != publisher.Id) return BadRequest();
+            try
             {
-                return BadRequest();
+                var updated = await _publisherService.UpdateAsync(id, publisher);
+                return Ok(updated);
             }
-
-            var existingPublisher = await _publisherRepository.GetPublisherAsync(id);
-            if (existingPublisher == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-
-            // Optionally map fields from 'publisher' to 'existingPublisher' here
-            await _publisherRepository.UpdatePublisherAsync(publisher);
-            return Ok(publisher);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _publisherRepository.DeletePublisherAsync(id);
+            await _publisherService.DeleteAsync(id);
             return NoContent();
         }
     }

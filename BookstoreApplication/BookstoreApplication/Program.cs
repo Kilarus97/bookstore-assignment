@@ -1,6 +1,7 @@
 ﻿using System;
 using BookstoreApplication.Data;
 using BookstoreApplication.Repository;
+using BookstoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +31,14 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
+builder.Services.AddScoped<BookServices>();
+builder.Services.AddScoped<AuthorService>();
+builder.Services.AddScoped<PublisherService>();
+
 builder.Services.AddScoped<BooksRepo>();
 builder.Services.AddScoped<AuthorsRepo>();
 builder.Services.AddScoped<PublishersRepo>();
+
 
 var app = builder.Build();
 

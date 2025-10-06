@@ -14,23 +14,23 @@ namespace BookstoreApplication.Repository
             _context = context;
         }
 
-            public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
+        public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
+        {
+            return await _context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Publisher)
+            .Select(b => new BookDto
             {
-                return await _context.Books
-                .Include(b => b.Author)
-                .Include(b => b.Publisher)
-                .Select(b => new BookDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    PageCount = b.PageCount,
-                    PublishedDate = b.PublishedDate,
-                    ISBN = b.ISBN,
-                    Author = b.Author != null ? b.Author.FullName : string.Empty,
-                    Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
-                    Website = b.Publisher != null ? b.Publisher.Website : string.Empty
-                })
-                .ToListAsync();
+                Id = b.Id,
+                Title = b.Title,
+                PageCount = b.PageCount,
+                PublishedDate = b.PublishedDate,
+                ISBN = b.ISBN,
+                Author = b.Author != null ? b.Author.FullName : string.Empty,
+                Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
+                Website = b.Publisher != null ? b.Publisher.Website : string.Empty
+            })
+            .ToListAsync();
         }
 
         public async Task<Book?> GetBookAsync(int id)
