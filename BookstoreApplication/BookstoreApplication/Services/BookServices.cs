@@ -1,20 +1,21 @@
-﻿using BookstoreApplication.Repository;
-using BookstoreApplication.DTO;
+﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
+using BookstoreApplication.Repository;
 
 namespace BookstoreApplication.Services
 {
-    public class BookServices
+    public class BookServices : IBookServices
     {
-        private readonly BooksRepo _booksRepo;
-        private readonly AuthorsRepo _authorRepo;
-        private readonly PublishersRepo _publisherRepo;
+        private readonly IBooksRepo _booksRepo;
+        private readonly IAuthorsRepo _authorsRepo;
+        private readonly IPublishersRepo _publishersRepo;
 
-        public BookServices(BooksRepo booksRepo, AuthorsRepo authorRepo, PublishersRepo publisherRepo)
+        public BookServices(IBooksRepo booksRepo, IAuthorsRepo authorsRepo, IPublishersRepo publishersRepo)
         {
             _booksRepo = booksRepo;
-            _authorRepo = authorRepo;
-            _publisherRepo = publisherRepo;
+            _authorsRepo = authorsRepo;
+            _publishersRepo = publishersRepo;
         }
 
         public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
@@ -29,10 +30,10 @@ namespace BookstoreApplication.Services
 
         public async Task<Book> CreateBookAsync(Book book)
         {
-            var author = await _authorRepo.GetAuthorAsync(book.AuthorId);
+            var author = await _authorsRepo.GetAuthorAsync(book.AuthorId);
             if (author == null) throw new Exception("Author not found");
 
-            var publisher = await _publisherRepo.GetPublisherAsync(book.PublisherId);
+            var publisher = await _publishersRepo.GetPublisherAsync(book.PublisherId);
             if (publisher == null) throw new Exception("Publisher not found");
 
             book.Author = author;
@@ -47,10 +48,10 @@ namespace BookstoreApplication.Services
             var existingBook = await _booksRepo.GetBookAsync(id);
             if (existingBook == null) throw new Exception("Book not found");
 
-            var author = await _authorRepo.GetAuthorAsync(book.AuthorId);
+            var author = await _authorsRepo.GetAuthorAsync(book.AuthorId);
             if (author == null) throw new Exception("Author not found");
 
-            var publisher = await _publisherRepo.GetPublisherAsync(book.PublisherId);
+            var publisher = await _publishersRepo.GetPublisherAsync(book.PublisherId);
             if (publisher == null) throw new Exception("Publisher not found");
 
             existingBook.Title = book.Title;

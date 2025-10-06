@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.Models;
+﻿using BookstoreApplication.Interfaces;
+using BookstoreApplication.Models;
 using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace BookstoreApplication.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly PublisherService _publisherService;
+        private readonly IPublisherService _publisherService;
 
-        public PublishersController(PublisherService publisherService)
+        public PublishersController(IPublisherService publisherService)
         {
             _publisherService = publisherService;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using BookstoreApplication.Data;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Repository;
 using BookstoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
@@ -31,13 +32,13 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-builder.Services.AddScoped<BookServices>();
-builder.Services.AddScoped<AuthorService>();
-builder.Services.AddScoped<PublisherService>();
+builder.Services.AddScoped<IBookServices, BookServices>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
 
-builder.Services.AddScoped<BooksRepo>();
-builder.Services.AddScoped<AuthorsRepo>();
-builder.Services.AddScoped<PublishersRepo>();
+builder.Services.AddScoped<IBooksRepo, BooksRepo>();
+builder.Services.AddScoped<IAuthorsRepo, AuthorsRepo>();
+builder.Services.AddScoped<IPublishersRepo, PublishersRepo>();
 
 
 var app = builder.Build();

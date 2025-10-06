@@ -1,11 +1,12 @@
 ﻿using BookstoreApplication.Data;
 using BookstoreApplication.DTO;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Repository
 {
-    public class BooksRepo
+    public class BooksRepo : IBooksRepo
     {
         private readonly BookstoreDbContext _context;
 
@@ -17,20 +18,20 @@ namespace BookstoreApplication.Repository
         public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {
             return await _context.Books
-            .Include(b => b.Author)
-            .Include(b => b.Publisher)
-            .Select(b => new BookDto
-            {
-                Id = b.Id,
-                Title = b.Title,
-                PageCount = b.PageCount,
-                PublishedDate = b.PublishedDate,
-                ISBN = b.ISBN,
-                Author = b.Author != null ? b.Author.FullName : string.Empty,
-                Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
-                Website = b.Publisher != null ? b.Publisher.Website : string.Empty
-            })
-            .ToListAsync();
+                .Include(b => b.Author)
+                .Include(b => b.Publisher)
+                .Select(b => new BookDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount,
+                    PublishedDate = b.PublishedDate,
+                    ISBN = b.ISBN,
+                    Author = b.Author != null ? b.Author.FullName : string.Empty,
+                    Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
+                    Website = b.Publisher != null ? b.Publisher.Website : string.Empty
+                })
+                .ToListAsync();
         }
 
         public async Task<Book?> GetBookAsync(int id)
@@ -62,6 +63,5 @@ namespace BookstoreApplication.Repository
                 await _context.SaveChangesAsync();
             }
         }
-
     }
 }

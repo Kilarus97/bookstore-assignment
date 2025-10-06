@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.Models;
+﻿using BookstoreApplication.Interfaces;
+using BookstoreApplication.Models;
 using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,12 +7,11 @@ namespace BookstoreApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class BooksController : ControllerBase
     {
-        private readonly BookServices _bookService;
+        private readonly IBookServices _bookService;
 
-        public BooksController(BookServices bookService)
+        public BooksController(IBookServices bookService)
         {
             _bookService = bookService;
         }
@@ -49,7 +49,6 @@ namespace BookstoreApplication.Controllers
         public async Task<IActionResult> Put(int id, Book book)
         {
             if (id != book.Id) return BadRequest();
-
             try
             {
                 var updated = await _bookService.UpdateBookAsync(id, book);

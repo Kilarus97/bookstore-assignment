@@ -1,14 +1,15 @@
 ﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using BookstoreApplication.Repository;
 
 namespace BookstoreApplication.Services
 {
-    public class AuthorService
+    public class AuthorService : IAuthorService
     {
-        private readonly AuthorsRepo _authorsRepo;
+        private readonly IAuthorsRepo _authorsRepo;
 
-        public AuthorService(AuthorsRepo authorsRepo)
+        public AuthorService(IAuthorsRepo authorsRepo)
         {
             _authorsRepo = authorsRepo;
         }

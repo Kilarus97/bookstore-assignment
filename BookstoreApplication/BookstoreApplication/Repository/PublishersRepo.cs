@@ -1,10 +1,11 @@
 ﻿using BookstoreApplication.Data;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Repository
 {
-    public class PublishersRepo
+    public class PublishersRepo : IPublishersRepo
     {
         private readonly BookstoreDbContext _context;
 
