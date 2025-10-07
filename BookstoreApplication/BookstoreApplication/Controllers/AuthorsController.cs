@@ -1,6 +1,5 @@
 ﻿using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
-using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreApplication.Controllers
@@ -27,8 +26,7 @@ namespace BookstoreApplication.Controllers
         public async Task<IActionResult> GetOne(int id)
         {
             var author = await _authorService.GetOneAsync(id);
-            if (author == null) return NotFound();
-            return Ok(author);
+            return Ok(author); // Izuzetak se baca ako nije pronađen
         }
 
         [HttpPost]
@@ -41,16 +39,11 @@ namespace BookstoreApplication.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Author author)
         {
-            if (id != author.Id) return BadRequest();
-            try
-            {
-                var updated = await _authorService.UpdateAsync(id, author);
-                return Ok(updated);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            if (id != author.Id)
+                return BadRequest("ID autora u URL-u ne odgovara ID-ju u telu zahteva.");
+
+            var updated = await _authorService.UpdateAsync(id, author);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]

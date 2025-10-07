@@ -1,6 +1,7 @@
-﻿using BookstoreApplication.Interfaces;
+﻿using BookstoreApplication.Exceptions;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
-using BookstoreApplication.Repository;
+
 
 namespace BookstoreApplication.Services
 {
@@ -18,9 +19,13 @@ namespace BookstoreApplication.Services
             return await _publishersRepo.GetAllPublishersAsync();
         }
 
-        public async Task<Publisher?> GetOneAsync(int id)
+        public async Task<Publisher> GetOneAsync(int id)
         {
-            return await _publishersRepo.GetPublisherAsync(id);
+            var publisher = await _publishersRepo.GetPublisherAsync(id);
+            if (publisher == null)
+                throw new NotFoundException($"Izdavač sa ID-jem {id} nije pronađen.");
+
+            return publisher;
         }
 
         public async Task<Publisher> CreateAsync(Publisher publisher)
@@ -32,7 +37,8 @@ namespace BookstoreApplication.Services
         public async Task<Publisher> UpdateAsync(int id, Publisher publisher)
         {
             var existing = await _publishersRepo.GetPublisherAsync(id);
-            if (existing == null) throw new Exception("Publisher not found");
+            if (existing == null)
+                throw new NotFoundException($"Izdavač sa ID-jem {id} nije pronađen.");
 
             existing.Name = publisher.Name;
             existing.Website = publisher.Website;
@@ -42,6 +48,10 @@ namespace BookstoreApplication.Services
 
         public async Task DeleteAsync(int id)
         {
+            var publisher = await _publishersRepo.GetPublisherAsync(id);
+            if (publisher == null)
+                throw new NotFoundException($"Izdavač sa ID-jem {id} ne postoji.");
+
             await _publishersRepo.DeletePublisherAsync(id);
         }
     }

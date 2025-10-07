@@ -1,7 +1,8 @@
 ﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Exceptions;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
-using BookstoreApplication.Repository;
+
 
 namespace BookstoreApplication.Services
 {
@@ -19,9 +20,13 @@ namespace BookstoreApplication.Services
             return await _authorsRepo.GetAllAuthorDtosAsync();
         }
 
-        public async Task<Author?> GetOneAsync(int id)
+        public async Task<Author> GetOneAsync(int id)
         {
-            return await _authorsRepo.GetAuthorAsync(id);
+            var author = await _authorsRepo.GetAuthorAsync(id);
+            if (author == null)
+                throw new NotFoundException($"Autor sa ID-jem {id} nije pronađen.");
+
+            return author;
         }
 
         public async Task<Author> CreateAsync(Author author)
@@ -33,7 +38,8 @@ namespace BookstoreApplication.Services
         public async Task<Author> UpdateAsync(int id, Author author)
         {
             var existing = await _authorsRepo.GetAuthorAsync(id);
-            if (existing == null) throw new Exception("Author not found");
+            if (existing == null)
+                throw new NotFoundException($"Autor sa ID-jem {id} nije pronađen.");
 
             existing.FullName = author.FullName;
             await _authorsRepo.UpdateAuthorAsync(existing);
@@ -42,6 +48,10 @@ namespace BookstoreApplication.Services
 
         public async Task DeleteAsync(int id)
         {
+            var author = await _authorsRepo.GetAuthorAsync(id);
+            if (author == null)
+                throw new NotFoundException($"Autor sa ID-jem {id} ne postoji.");
+
             await _authorsRepo.DeleteAuthorAsync(id);
         }
     }

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using BookstoreApplication.DTO;
+using BookstoreApplication.Exceptions;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
-using BookstoreApplication.Repository;
+
 
 namespace BookstoreApplication.Services
 {
@@ -34,16 +35,21 @@ namespace BookstoreApplication.Services
         public async Task<BookDetailsDto?> GetBookDetailsAsync(int id)
         {
             var book = await _booksRepo.GetBookAsync(id);
-            return book == null ? null : _mapper.Map<BookDetailsDto>(book);
+            if (book == null)
+                throw new NotFoundException($"Knjiga sa ID-jem {id} nije pronađena.");
+
+            return _mapper.Map<BookDetailsDto>(book);
         }
 
         public async Task<Book> CreateBookAsync(Book book)
         {
             var author = await _authorsRepo.GetAuthorAsync(book.AuthorId);
-            if (author == null) throw new Exception("Author not found");
+            if (author == null)
+                throw new NotFoundException($"Autor sa ID-jem {book.AuthorId} nije pronađen.");
 
             var publisher = await _publishersRepo.GetPublisherAsync(book.PublisherId);
-            if (publisher == null) throw new Exception("Publisher not found");
+            if (publisher == null)
+                throw new NotFoundException($"Izdavač sa ID-jem {book.PublisherId} nije pronađen.");
 
             book.Author = author;
             book.Publisher = publisher;
@@ -55,13 +61,16 @@ namespace BookstoreApplication.Services
         public async Task<Book> UpdateBookAsync(int id, Book book)
         {
             var existingBook = await _booksRepo.GetBookAsync(id);
-            if (existingBook == null) throw new Exception("Book not found");
+            if (existingBook == null)
+                throw new NotFoundException($"Knjiga sa ID-jem {id} nije pronađena.");
 
             var author = await _authorsRepo.GetAuthorAsync(book.AuthorId);
-            if (author == null) throw new Exception("Author not found");
+            if (author == null)
+                throw new NotFoundException($"Autor sa ID-jem {book.AuthorId} nije pronađen.");
 
             var publisher = await _publishersRepo.GetPublisherAsync(book.PublisherId);
-            if (publisher == null) throw new Exception("Publisher not found");
+            if (publisher == null)
+                throw new NotFoundException($"Izdavač sa ID-jem {book.PublisherId} nije pronađen.");
 
             existingBook.Title = book.Title;
             existingBook.PageCount = book.PageCount;
@@ -78,6 +87,10 @@ namespace BookstoreApplication.Services
 
         public async Task DeleteBookAsync(int id)
         {
+            var book = await _booksRepo.GetBookAsync(id);
+            if (book == null)
+                throw new NotFoundException($"Knjiga sa ID-jem {id} ne postoji.");
+
             await _booksRepo.DeleteBookAsync(id);
         }
     }
