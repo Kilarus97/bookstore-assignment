@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.DTO;
+﻿using AutoMapper;
+using BookstoreApplication.DTO;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using BookstoreApplication.Repository;
@@ -10,22 +11,30 @@ namespace BookstoreApplication.Services
         private readonly IBooksRepo _booksRepo;
         private readonly IAuthorsRepo _authorsRepo;
         private readonly IPublishersRepo _publishersRepo;
+        private readonly IMapper _mapper;
 
-        public BookServices(IBooksRepo booksRepo, IAuthorsRepo authorsRepo, IPublishersRepo publishersRepo)
+        public BookServices(
+            IBooksRepo booksRepo,
+            IAuthorsRepo authorsRepo,
+            IPublishersRepo publishersRepo,
+            IMapper mapper)
         {
             _booksRepo = booksRepo;
             _authorsRepo = authorsRepo;
             _publishersRepo = publishersRepo;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {
-            return await _booksRepo.GetAllBooksAsync();
+            var books = await _booksRepo.GetAllBooksAsync();
+            return _mapper.Map<IEnumerable<BookDto>>(books);
         }
 
-        public async Task<Book?> GetBookAsync(int id)
+        public async Task<BookDetailsDto?> GetBookDetailsAsync(int id)
         {
-            return await _booksRepo.GetBookAsync(id);
+            var book = await _booksRepo.GetBookAsync(id);
+            return book == null ? null : _mapper.Map<BookDetailsDto>(book);
         }
 
         public async Task<Book> CreateBookAsync(Book book)

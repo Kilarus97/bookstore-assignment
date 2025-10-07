@@ -24,15 +24,14 @@ namespace BookstoreApplication.Repository
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PageCount = b.PageCount,
-                    PublishedDate = b.PublishedDate,
                     ISBN = b.ISBN,
                     Author = b.Author != null ? b.Author.FullName : string.Empty,
                     Publisher = b.Publisher != null ? b.Publisher.Name : string.Empty,
-                    Website = b.Publisher != null ? b.Publisher.Website : string.Empty
+                    YearsAgoPublished = DateTime.Now.Year - b.PublishedDate.Year
                 })
                 .ToListAsync();
         }
+
 
         public async Task<Book?> GetBookAsync(int id)
         {

@@ -26,7 +26,7 @@ namespace BookstoreApplication.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            var book = await _bookService.GetBookAsync(id);
+            var book = await _bookService.GetBookDetailsAsync(id);
             if (book == null) return NotFound();
             return Ok(book);
         }

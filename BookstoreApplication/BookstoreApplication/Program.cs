@@ -1,6 +1,7 @@
 ﻿using System;
 using BookstoreApplication.Data;
 using BookstoreApplication.Interfaces;
+using BookstoreApplication.Mapping;
 using BookstoreApplication.Repository;
 using BookstoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,12 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
+
+
 
 builder.Services.AddScoped<IBookServices, BookServices>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
