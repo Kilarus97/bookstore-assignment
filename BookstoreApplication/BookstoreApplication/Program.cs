@@ -3,7 +3,10 @@ using BookstoreApplication.Interfaces;
 using BookstoreApplication.Mapping;
 using BookstoreApplication.Repository;
 using BookstoreApplication.Services;
+using BookstoreApplication.Middleware;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +45,14 @@ builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IBooksRepo, BooksRepo>();
 builder.Services.AddScoped<IAuthorsRepo, AuthorsRepo>();
 builder.Services.AddScoped<IPublishersRepo, PublishersRepo>();
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
 
 var app = builder.Build();
 

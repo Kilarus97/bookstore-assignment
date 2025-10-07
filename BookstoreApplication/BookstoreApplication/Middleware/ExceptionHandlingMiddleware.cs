@@ -1,32 +1,42 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using BookstoreApplication.Exceptions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-internal sealed class ExceptionHandlingMiddleware : IMiddleware
+namespace BookstoreApplication.Middleware
 {
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public class ExceptionHandlingMiddleware : IMiddleware
     {
-        try
-        {
-            await next(context);
-        }
-        catch (Exception e)
-        {
-            await HandleExceptionAsync(context, e);
-        }
-    }
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
-    {
-        httpContext.Response.ContentType = "application/json";
-        httpContext.Response.StatusCode = exception switch
+        public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)
         {
-            BadRequestException => StatusCodes.Status400BadRequest,
-            ForbiddenException => StatusCodes.Status403Forbidden,
-            NotFoundException => StatusCodes.Status404NotFound,
-            _ => StatusCodes.Status500InternalServerError
-        };
+            _logger = logger;
+        }
 
-        var response = new { error = exception.Message };
-        await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Neobrađen izuzetak: {Message}", ex.Message);
+
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = ex switch
+                {
+                    NotFoundException => (int)HttpStatusCode.NotFound,
+                    BadRequestException => (int)HttpStatusCode.BadRequest,
+                    ForbiddenException => (int)HttpStatusCode.Forbidden,
+                    _ => (int)HttpStatusCode.InternalServerError
+                };
+
+                var response = new { error = ex.Message };
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            }
+        }
     }
 }
