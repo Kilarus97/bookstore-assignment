@@ -16,6 +16,9 @@ namespace BookstoreApplication.Mapping
             CreateMap<Book, BookDetailsDto>()
                 .ForMember(dest => dest.AuthorFullName, opt => opt.MapFrom(src => src.Author != null ? src.Author.FullName : string.Empty))
                 .ForMember(dest => dest.PublisherName, opt => opt.MapFrom(src => src.Publisher != null ? src.Publisher.Name : string.Empty));
+
+            CreateMap<Author, AuthorDto>();
+            CreateMap<Award, AwardDto>();
         }
     }
 }

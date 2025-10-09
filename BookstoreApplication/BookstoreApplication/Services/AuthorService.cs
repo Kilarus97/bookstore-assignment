@@ -24,6 +24,16 @@ namespace BookstoreApplication.Services
             return await _authorsRepo.GetAllAuthorDtosAsync();
         }
 
+        public async Task<PaginatedList<AuthorDto>> GetPaginatedAsync(int pageIndex, int pageSize)
+        {
+            var allAuthors = await _authorsRepo.GetAllAuthorDtosAsync(); // ili GetAllAsync()
+            var count = allAuthors.Count();
+            var items = allAuthors.Skip(pageIndex * pageSize).Take(pageSize).ToList();
+
+            return new PaginatedList<AuthorDto>(items, count, pageIndex, pageSize);
+        }
+
+
         public async Task<Author> GetOneAsync(int id)
         {
             _logger.LogInformation("Dohvatanje autora sa ID-jem {Id}", id);

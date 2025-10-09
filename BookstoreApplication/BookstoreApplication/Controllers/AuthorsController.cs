@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.Interfaces;
+﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,14 @@ namespace BookstoreApplication.Controllers
             var author = await _authorService.GetOneAsync(id);
             return Ok(author); // Izuzetak se baca ako nije pronađen
         }
+
+        [HttpGet("paginated")]
+        public async Task<ActionResult<PaginatedList<AuthorDto>>> GetPaginatedAuthors([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
+        {
+            var result = await _authorService.GetPaginatedAsync(pageIndex, pageSize);
+            return Ok(result);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Post(Author author)
