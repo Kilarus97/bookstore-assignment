@@ -19,6 +19,8 @@ namespace BookstoreApplication.Mapping
 
             CreateMap<Author, AuthorDto>();
             CreateMap<Award, AwardDto>();
+            CreateMap<Publisher, PublisherDto>();
+
         }
     }
 }

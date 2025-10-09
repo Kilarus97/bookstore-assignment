@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.Interfaces;
+﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,14 @@ namespace BookstoreApplication.Controllers
             _publisherService = publisherService;
         }
 
+        [HttpGet("sorted")]
+        public async Task<ActionResult<List<PublisherDto>>> GetSortedPublishers([FromQuery] PublisherSortType? sortType)
+        {
+            var result = await _publisherService.GetSortedAsync(sortType ?? PublisherSortType.NameAsc);
+            return Ok(result);
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,14 +39,14 @@ namespace BookstoreApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Publisher publisher)
+        public async Task<IActionResult> Post(PublisherDto publisher)
         {
             var created = await _publisherService.CreateAsync(publisher);
             return Ok(created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Publisher publisher)
+        public async Task<IActionResult> Put(int id, PublisherDto publisher)
         {
             if (id != publisher.Id)
                 return BadRequest("ID izdavača u URL-u ne odgovara ID-ju u telu zahteva.");
