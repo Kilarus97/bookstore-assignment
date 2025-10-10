@@ -7,6 +7,7 @@ namespace BookstoreApplication.Interfaces
     {
         Task<IEnumerable<BookDto>> GetAllBooksAsync();
         Task<IEnumerable<BookDetailsDto>> GetAllBookDetailsAsync();
+        Task<List<BookDetailsDto>> SearchBookDetailsAsync(BookSearchDto search);
         Task<Book?> GetBookAsync(int id);
         Task AddBookAsync(Book book);
         Task UpdateBookAsync(Book book);

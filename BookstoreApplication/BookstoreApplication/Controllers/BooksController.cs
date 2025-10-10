@@ -17,6 +17,14 @@ namespace BookstoreApplication.Controllers
             _bookService = bookService;
         }
 
+        [HttpPost("details/search")]
+        public async Task<ActionResult<List<BookDetailsDto>>> SearchBookDetails([FromBody] BookSearchDto search)
+        {
+            var result = await _bookService.SearchBookDetailsAsync(search);
+            return Ok(result);
+        }
+
+
         [HttpGet("details/sorted")]
         public async Task<ActionResult<List<BookDetailsDto>>> GetSortedBookDetails([FromQuery] BookSortType? sortType)
         {

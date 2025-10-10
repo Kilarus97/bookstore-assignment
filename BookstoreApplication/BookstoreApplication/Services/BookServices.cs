@@ -30,6 +30,24 @@ namespace BookstoreApplication.Services
             _logger = logger;
         }
 
+        public async Task<List<BookDetailsDto>> SearchBookDetailsAsync(BookSearchDto search)
+        {
+            try
+            {
+                _logger.LogInformation("Kombinovana pretraga započeta: {@Search}", search);
+                var result = await _booksRepo.SearchBookDetailsAsync(search);
+                _logger.LogInformation("Pretraga završena. Pronađeno {Count} knjiga.", result.Count);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Greška tokom kombinovane pretrage.");
+                throw;
+            }
+        }
+
+
+
         public async Task<List<BookDetailsDto>> GetSortedDetailsAsync(BookSortType sortType)
         {
             _logger.LogInformation("Započinjem sortiranje knjiga po tipu: {SortType}", sortType);
