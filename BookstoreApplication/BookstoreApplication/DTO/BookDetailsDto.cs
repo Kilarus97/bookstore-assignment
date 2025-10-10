@@ -13,5 +13,7 @@
 
         public int PublisherId { get; set; }
         public string PublisherName { get; set; } = string.Empty;
+
+        public string Website { get; set; } = string.Empty;
     }
 }

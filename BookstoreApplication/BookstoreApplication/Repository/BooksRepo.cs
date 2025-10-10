@@ -32,6 +32,29 @@ namespace BookstoreApplication.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<BookDetailsDto>> GetAllBookDetailsAsync()
+        {
+            return await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Publisher)
+                .Select(b => new BookDetailsDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount,
+                    PublishedDate = b.PublishedDate,
+                    ISBN = b.ISBN,
+                    AuthorId = b.Author != null ? b.Author.Id : 0,
+                    AuthorFullName = b.Author != null ? b.Author.FullName : string.Empty,
+                    PublisherId = b.Publisher != null ? b.Publisher.Id : 0,
+                    PublisherName = b.Publisher != null ? b.Publisher.Name : string.Empty,
+                    Website = b.Publisher != null ? b.Publisher.Website : string.Empty
+                })
+                .ToListAsync();
+        }
+
+
+
 
         public async Task<Book?> GetBookAsync(int id)
         {

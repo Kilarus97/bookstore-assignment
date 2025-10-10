@@ -1,4 +1,6 @@
-﻿using BookstoreApplication.Interfaces;
+﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Enums;
+using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +16,14 @@ namespace BookstoreApplication.Controllers
         {
             _bookService = bookService;
         }
+
+        [HttpGet("details/sorted")]
+        public async Task<ActionResult<List<BookDetailsDto>>> GetSortedBookDetails([FromQuery] BookSortType? sortType)
+        {
+            var result = await _bookService.GetSortedDetailsAsync(sortType ?? BookSortType.TitleAsc);
+            return Ok(result);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

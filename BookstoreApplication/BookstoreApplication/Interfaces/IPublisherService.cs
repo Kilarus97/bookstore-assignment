@@ -1,4 +1,5 @@
 ﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Enums;
 
 
 namespace BookstoreApplication.Interfaces

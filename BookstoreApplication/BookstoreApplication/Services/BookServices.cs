@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookstoreApplication.DTO;
+using BookstoreApplication.Enums;
 using BookstoreApplication.Exceptions;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
@@ -28,6 +29,32 @@ namespace BookstoreApplication.Services
             _mapper = mapper;
             _logger = logger;
         }
+
+        public async Task<List<BookDetailsDto>> GetSortedDetailsAsync(BookSortType sortType)
+        {
+            _logger.LogInformation("Započinjem sortiranje knjiga po tipu: {SortType}", sortType);
+
+            var books = await _booksRepo.GetAllBookDetailsAsync();
+
+            var sorted = sortType switch
+            {
+                BookSortType.TitleAsc => books.OrderBy(b => b.Title),
+                BookSortType.TitleDesc => books.OrderByDescending(b => b.Title),
+                BookSortType.PublishDateAsc => books.OrderBy(b => b.PublishedDate),
+                BookSortType.PublishDateDesc => books.OrderByDescending(b => b.PublishedDate),
+                BookSortType.AuthorNameAsc => books.OrderBy(b => b.AuthorFullName),
+                BookSortType.AuthorNameDesc => books.OrderByDescending(b => b.AuthorFullName),
+                _ => books.OrderBy(b => b.Title)
+            };
+
+            _logger.LogInformation("Sortiranje završeno. Vraćam {Count} knjiga.", sorted.Count());
+
+            return _mapper.Map<List<BookDetailsDto>>(sorted.ToList());
+        }
+
+
+
+
 
         public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {

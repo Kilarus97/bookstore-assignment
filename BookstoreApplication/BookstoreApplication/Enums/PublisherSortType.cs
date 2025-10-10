@@ -1,4 +1,4 @@
-﻿namespace BookstoreApplication.DTO
+﻿namespace BookstoreApplication.Enums
 {
     public enum PublisherSortType
     {

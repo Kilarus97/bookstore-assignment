@@ -1,4 +1,5 @@
 ﻿using BookstoreApplication.DTO;
+using BookstoreApplication.Enums;
 using BookstoreApplication.Exceptions;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
