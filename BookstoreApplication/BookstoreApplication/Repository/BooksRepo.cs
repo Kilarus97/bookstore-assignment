@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BookstoreApplication.Data;
+﻿using BookstoreApplication.Data;
 using BookstoreApplication.DTO;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
@@ -10,15 +9,13 @@ namespace BookstoreApplication.Repository
     public class BooksRepo : IBooksRepo
     {
         private readonly BookstoreDbContext _context;
-        private readonly IMapper _mapper;
 
-        public BooksRepo(BookstoreDbContext context , IMapper mapper)
+        public BooksRepo(BookstoreDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        public async Task<List<BookDetailsDto>> SearchBookDetailsAsync(BookSearchDto search)
+        public async Task<List<Book>> SearchBookDetailsAsync(BookSearchDto search)
         {
             var query = _context.Books
                 .Include(b => b.Author)
@@ -60,34 +57,24 @@ namespace BookstoreApplication.Repository
                 };
             }
 
-            return await _mapper.ProjectTo<BookDetailsDto>(query).ToListAsync();
+            return await query.ToListAsync();
         }
 
-
-
-
-        public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
+        public async Task<List<Book>> GetAllBooksAsync()
         {
-            var query = _context.Books
+            return await _context.Books
                 .Include(b => b.Author)
-                .Include(b => b.Publisher);
-
-            return await _mapper.ProjectTo<BookDto>(query).ToListAsync();
+                .Include(b => b.Publisher)
+                .ToListAsync();
         }
 
-
-        public async Task<IEnumerable<BookDetailsDto>> GetAllBookDetailsAsync()
+        public async Task<List<Book>> GetAllBookDetailsAsync()
         {
-            var query = _context.Books
+            return await _context.Books
                 .Include(b => b.Author)
-                .Include(b => b.Publisher);
-
-            return await _mapper.ProjectTo<BookDetailsDto>(query).ToListAsync();
+                .Include(b => b.Publisher)
+                .ToListAsync();
         }
-
-
-
-
 
         public async Task<Book?> GetBookAsync(int id)
         {

@@ -5,9 +5,9 @@ namespace BookstoreApplication.Interfaces
 {
     public interface IBooksRepo
     {
-        Task<IEnumerable<BookDto>> GetAllBooksAsync();
-        Task<IEnumerable<BookDetailsDto>> GetAllBookDetailsAsync();
-        Task<List<BookDetailsDto>> SearchBookDetailsAsync(BookSearchDto search);
+        Task<List<Book>> GetAllBooksAsync();
+        Task<List<Book>> GetAllBookDetailsAsync();
+        Task<List<Book>> SearchBookDetailsAsync(BookSearchDto search);
         Task<Book?> GetBookAsync(int id);
         Task AddBookAsync(Book book);
         Task UpdateBookAsync(Book book);
