@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookstoreApplication.DTO;
+using BookstoreApplication.DTO.Login.Request;
 using BookstoreApplication.DTO.Register.Request;
 using BookstoreApplication.Models;
 
@@ -24,6 +25,14 @@ namespace BookstoreApplication.Mapping
             CreateMap<Award, AwardDto>();
             CreateMap<Publisher, PublisherDto>();
             CreateMap<RegistrationDto,User>();
+
+
+            CreateMap<User, ProfileRequestDTO>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname));
+
 
         }
     }

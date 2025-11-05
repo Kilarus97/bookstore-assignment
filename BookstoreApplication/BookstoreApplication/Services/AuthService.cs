@@ -1,10 +1,14 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using BookstoreApplication.DTO.Login.Request;
 using BookstoreApplication.DTO.Register.Request;
 using BookstoreApplication.Exceptions;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookstoreApplication.Services
 {
@@ -12,10 +16,12 @@ namespace BookstoreApplication.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<User> userManager, IMapper mapper)
+        public AuthService(UserManager<User> userManager, IConfiguration configuration, IMapper mapper)
         {
             _userManager = userManager;
+            _configuration = configuration;
             _mapper = mapper;
         }
 
@@ -30,7 +36,7 @@ namespace BookstoreApplication.Services
             }
         }
 
-        public async Task Login(LoginRequestDto data)
+        public async Task<string> Login(LoginRequestDto data)
         {
             // pronalaženje korisnika prema korisničkom imenu
             var user = await _userManager.FindByNameAsync(data.Username);
@@ -45,6 +51,53 @@ namespace BookstoreApplication.Services
             {
                 throw new BadRequestException("Invalid credentials.");
             }
+
+            var token = await GenerateJwt(user);
+            return token;
+        }
+
+        public async Task<ProfileRequestDTO> GetProfile(ClaimsPrincipal userPrincipal)
+        {
+            // Preuzimanje korisničkog imena iz tokena
+            var username = userPrincipal.FindFirstValue("username");
+
+            if (username == null)
+            {
+                throw new BadRequestException("Token is invalid");
+            }
+
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                throw new NotFoundException("User with provided username does not exist");
+            }
+
+            return _mapper.Map<ProfileRequestDTO>(user);
+        }
+
+
+        private async Task<string> GenerateJwt(User user)
+        {
+            var claims = new List<Claim>
+            {
+              new Claim(JwtRegisteredClaimNames.Sub, user.Id),  // 'sub' atribut
+              new Claim("username", user.UserName),  // 'username' atribut
+              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  // jedinstveni identifikator tokena
+            };
+
+            // Konfiguracija za generisanje tokena
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+              issuer: _configuration["Jwt:Issuer"],
+              audience: _configuration["Jwt:Audience"],
+              claims: claims,
+              expires: DateTime.UtcNow.AddDays(1), // važi 1 dan ('exp' atribut), nakon čega mora nova prijava
+              signingCredentials: creds
+            );
+
+            // Generisanje tokena
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
