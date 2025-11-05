@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using BookstoreApplication.DTO;
 using BookstoreApplication.Enums;
 using BookstoreApplication.Exceptions;
@@ -37,7 +38,7 @@ namespace BookstoreApplication.Services
                 _logger.LogInformation("Kombinovana pretraga započeta: {@Search}", search);
                 var result = await _booksRepo.SearchBookDetailsAsync(search);
                 _logger.LogInformation("Pretraga završena. Pronađeno {Count} knjiga.", result.Count);
-                return result;
+                return _mapper.Map<List<BookDetailsDto>>(result.ToList());
             }
             catch (Exception ex)
             {
@@ -60,8 +61,8 @@ namespace BookstoreApplication.Services
                 BookSortType.TitleDesc => books.OrderByDescending(b => b.Title),
                 BookSortType.PublishDateAsc => books.OrderBy(b => b.PublishedDate),
                 BookSortType.PublishDateDesc => books.OrderByDescending(b => b.PublishedDate),
-                BookSortType.AuthorNameAsc => books.OrderBy(b => b.AuthorFullName),
-                BookSortType.AuthorNameDesc => books.OrderByDescending(b => b.AuthorFullName),
+                BookSortType.AuthorNameAsc => books.OrderBy(b => b.Author.FullName),
+                BookSortType.AuthorNameDesc => books.OrderByDescending(b => b.Author.FullName),
                 _ => books.OrderBy(b => b.Title)
             };
 

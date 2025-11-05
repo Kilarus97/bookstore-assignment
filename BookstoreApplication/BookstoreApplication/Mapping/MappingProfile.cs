@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookstoreApplication.DTO;
+using BookstoreApplication.DTO.Register.Request;
 using BookstoreApplication.Models;
 
 namespace BookstoreApplication.Mapping
@@ -22,6 +23,7 @@ namespace BookstoreApplication.Mapping
             CreateMap<Author, AuthorDto>();
             CreateMap<Award, AwardDto>();
             CreateMap<Publisher, PublisherDto>();
+            CreateMap<RegistrationDto,User>();
 
         }
     }

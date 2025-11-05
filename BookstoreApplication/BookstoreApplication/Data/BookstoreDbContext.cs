@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BookstoreApplication.Models;
+﻿using BookstoreApplication.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Data
 {
-    public class BookstoreDbContext : DbContext
+    public class BookstoreDbContext : IdentityDbContext<User>
     {
         public BookstoreDbContext(DbContextOptions<BookstoreDbContext> options) : base(options) { }
 
@@ -15,6 +17,8 @@ namespace BookstoreApplication.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // 🔗 Relacije
             modelBuilder.Entity<AuthorAward>()
                 .HasKey(aa => new { aa.AuthorId, aa.AwardId });
