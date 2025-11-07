@@ -11,10 +11,14 @@ namespace BookstoreApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly GoogleAuthService _googleAuthService;
+        private readonly JwtService _jwtService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, GoogleAuthService googleAuthService, JwtService jwtService)
         {
             _authService = authService;
+            _googleAuthService = googleAuthService;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -44,6 +48,33 @@ namespace BookstoreApplication.Controllers
         public async Task<IActionResult> Profile()
         {
             return Ok(await _authService.GetProfile(User));
+        }
+
+        [HttpPost("google")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            try
+            {
+                var payload = await _googleAuthService.VerifyTokenAsync(request.IdToken);
+
+                // Kreiraj svog korisnika ili pronađi u bazi
+                var user = new
+                {
+                    Email = payload.Email,
+                    Name = payload.Name,
+                    Picture = payload.Picture,
+                    GoogleId = payload.Subject
+                };
+
+                // Izdaj sopstveni JWT
+                var token = _jwtService.GenerateToken(user.Email, "User"); // možeš dodati role
+
+                return Ok(new { user, token });
+            }
+            catch
+            {
+                return Unauthorized("Invalid Google token");
+            }
         }
     }
 }

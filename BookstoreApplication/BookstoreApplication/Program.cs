@@ -122,6 +122,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBooksRepo, BooksRepo>();
 builder.Services.AddScoped<IAuthorsRepo, AuthorsRepo>();
 builder.Services.AddScoped<IPublishersRepo, PublishersRepo>();
+builder.Services.AddSingleton(new GoogleAuthService("417617350423-mqvt56d8v6brtpuhq7e9rvnem7i8u9gu.apps.googleusercontent.com"));
+builder.Services.AddSingleton(new JwtService(
+    builder.Configuration));
 
 // ➡️ Serilog
 var logger = new LoggerConfiguration()

@@ -10,6 +10,7 @@ using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
+
 namespace BookstoreApplication.Services
 {
     public class AuthService : IAuthService
@@ -109,6 +110,9 @@ namespace BookstoreApplication.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+
 
     }
 }
