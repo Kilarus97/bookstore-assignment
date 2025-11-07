@@ -36,7 +36,7 @@ namespace BookstoreApplication.Services
                 throw new BadRequestException(errorMessage);
             }
 
-            await _userManager.AddToRoleAsync(user, "Editor");
+            await _userManager.AddToRoleAsync(user, "Librarian");
         }
 
         public async Task<string> Login(LoginRequestDto data)
@@ -83,24 +83,32 @@ namespace BookstoreApplication.Services
         {
             var claims = new List<Claim>
             {
-              new Claim(JwtRegisteredClaimNames.Sub, user.Id),  // 'sub' atribut
-              new Claim("username", user.UserName),  // 'username' atribut
-              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  // jedinstveni identifikator tokena
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),              // 'sub' atribut
+                new Claim("username", user.UserName),                         // 'username' atribut
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // jedinstveni identifikator tokena
             };
+
+            // Dodaj role korisnika
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim("role", role));
+            }
 
             // Konfiguracija za generisanje tokena
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
-              issuer: _configuration["Jwt:Issuer"],
-              audience: _configuration["Jwt:Audience"],
-              claims: claims,
-              expires: DateTime.UtcNow.AddDays(1), // važi 1 dan ('exp' atribut), nakon čega mora nova prijava
-              signingCredentials: creds
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1), // važi 1 dan ('exp' atribut)
+                signingCredentials: creds
             );
 
-            // Generisanje tokena
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
 }

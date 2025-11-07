@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -83,20 +83,6 @@ namespace BookstoreApplication.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Awards", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "IdentityRole<Guid>",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IdentityRole<Guid>", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -276,6 +262,15 @@ namespace BookstoreApplication.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "2301d884-221a-4e7d-b509-0113dcc043e1", null, "Editor", "EDITOR" },
+                    { "5b00155d-77a2-438c-b18f-dc1cc8af5a43", null, "Librarian", "LIBRARIAN" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Authors",
                 columns: new[] { "Id", "Biography", "Birthday", "FullName" },
                 values: new object[,]
@@ -296,15 +291,6 @@ namespace BookstoreApplication.Migrations
                     { 2, "Najbolja drama", "Sterijino pozorje", 1956 },
                     { 3, "Za književnost", "Nobelova nagrada", 1901 },
                     { 4, "Za pripovetku", "Andrićeva nagrada", 1975 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "IdentityRole<Guid>",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("2301d884-221a-4e7d-b509-0113dcc043e1"), null, "Editor", "EDITOR" },
-                    { new Guid("5b00155d-77a2-438c-b18f-dc1cc8af5a43"), null, "Librarian", "LIBRARIAN" }
                 });
 
             migrationBuilder.InsertData(
@@ -462,9 +448,6 @@ namespace BookstoreApplication.Migrations
 
             migrationBuilder.DropTable(
                 name: "Books");
-
-            migrationBuilder.DropTable(
-                name: "IdentityRole<Guid>");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
