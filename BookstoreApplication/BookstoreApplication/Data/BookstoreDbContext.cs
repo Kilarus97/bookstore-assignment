@@ -55,6 +55,12 @@ namespace BookstoreApplication.Data
                 .Property(a => a.DateOfBirth)
                 .HasColumnName("Birthday");
 
+            var editorRoleId = Guid.Parse("2301d884-221a-4e7d-b509-0113dcc043e1");
+            modelBuilder.Entity<IdentityRole<Guid>>().HasData(
+                new IdentityRole<Guid> { Id = editorRoleId, Name = "Editor", NormalizedName = "EDITOR" },
+                new IdentityRole<Guid> { Id = Guid.Parse("5b00155d-77a2-438c-b18f-dc1cc8af5a43"), Name = "Librarian", NormalizedName = "LIBRARIAN" }
+            );
+
 
             // 📚 Autori
             modelBuilder.Entity<Author>().HasData(

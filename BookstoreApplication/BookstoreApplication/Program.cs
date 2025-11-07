@@ -133,6 +133,12 @@ builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.InitializeAsync(services);
+}
+
 // ➡️ Middleware pipeline
 if (app.Environment.IsDevelopment())
 {

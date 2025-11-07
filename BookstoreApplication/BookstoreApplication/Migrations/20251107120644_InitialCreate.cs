@@ -86,6 +86,20 @@ namespace BookstoreApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IdentityRole<Guid>",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    NormalizedName = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityRole<Guid>", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Publishers",
                 columns: table => new
                 {
@@ -285,6 +299,15 @@ namespace BookstoreApplication.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "IdentityRole<Guid>",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("2301d884-221a-4e7d-b509-0113dcc043e1"), null, "Editor", "EDITOR" },
+                    { new Guid("5b00155d-77a2-438c-b18f-dc1cc8af5a43"), null, "Librarian", "LIBRARIAN" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Publishers",
                 columns: new[] { "Id", "Address", "Name", "Website" },
                 values: new object[,]
@@ -439,6 +462,9 @@ namespace BookstoreApplication.Migrations
 
             migrationBuilder.DropTable(
                 name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "IdentityRole<Guid>");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

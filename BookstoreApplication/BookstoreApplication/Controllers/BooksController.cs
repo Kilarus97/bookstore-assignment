@@ -2,6 +2,7 @@
 using BookstoreApplication.Enums;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookstoreApplication.Controllers
@@ -47,6 +48,7 @@ namespace BookstoreApplication.Controllers
             return Ok(book); // Izuzetak se baca ako knjiga ne postoji
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post(Book book)
         {
@@ -54,6 +56,7 @@ namespace BookstoreApplication.Controllers
             return Ok(created);
         }
 
+        [Authorize (Roles = "Editor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Book book)
         {
@@ -64,6 +67,7 @@ namespace BookstoreApplication.Controllers
             return Ok(updated);
         }
 
+        [Authorize(Roles = "Editor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

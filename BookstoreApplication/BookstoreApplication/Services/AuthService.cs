@@ -28,12 +28,15 @@ namespace BookstoreApplication.Services
         public async Task RegisterAsync(RegistrationDto data)
         {
             var user = _mapper.Map<User>(data);
+            
             var result = await _userManager.CreateAsync(user, data.Password);
             if (!result.Succeeded)
             {
                 string errorMessage = string.Join("; ", result.Errors.Select(e => e.Description));
                 throw new BadRequestException(errorMessage);
             }
+
+            await _userManager.AddToRoleAsync(user, "Editor");
         }
 
         public async Task<string> Login(LoginRequestDto data)
