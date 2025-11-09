@@ -33,6 +33,37 @@ namespace BookstoreApplication.Mapping
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname));
 
+            CreateMap<IssueDto, Issue>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.IssueNumber, opt => opt.MapFrom(src => src.IssueNumber))
+            .ForMember(dest => dest.CoverDate, opt => opt.MapFrom(src => src.CoverDate))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image.OriginalUrl))
+            .ForMember(dest => dest.ExternalId, opt => opt.Ignore())
+            .ForMember(dest => dest.Price, opt => opt.Ignore())
+            .ForMember(dest => dest.AvailableCopies, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.VolumeId, opt => opt.Ignore())
+            .ForMember(dest => dest.Volume, opt => opt.Ignore());
+
+            CreateMap<VolumeDto, Volume>()
+            .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Aliases, opt => opt.MapFrom(src => src.Aliases))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.StartYear, opt => opt.MapFrom(src => src.StartYear))
+            .ForMember(dest => dest.SiteUrl, opt => opt.Ignore()) // dodaj ako postoji u DTO
+            .ForMember(dest => dest.ImageUrl, opt => opt.Ignore()) // dodaj ako postoji u DTO
+            .ForMember(dest => dest.PublisherId, opt => opt.Ignore()) // moraš da rešiš ručno
+            .ForMember(dest => dest.Publisher, opt => opt.MapFrom(src => src.Publisher))
+            .ForMember(dest => dest.Issues, opt => opt.Ignore());
+
+            CreateMap<PublisherDto, Publisher>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore()) // lokalni ID iz baze
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Website, opt => opt.MapFrom(src => src.Website))
+            .ForMember(dest => dest.Address, opt => opt.Ignore()); // ako koristiš Address u modelu
+
 
         }
     }

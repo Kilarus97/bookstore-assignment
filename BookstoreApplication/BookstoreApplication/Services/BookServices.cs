@@ -154,7 +154,7 @@ namespace BookstoreApplication.Services
             existingBook.Author = author;
             existingBook.AuthorId = author.Id;
             existingBook.Publisher = publisher;
-            existingBook.PublisherId = publisher.Id;
+            existingBook.PublisherId = (int)publisher.Id;
 
             await _booksRepo.UpdateBookAsync(existingBook);
             _logger.LogInformation("Knjiga ID={Id} uspešno ažurirana.", id);

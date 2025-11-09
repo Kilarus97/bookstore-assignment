@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     [DbContext(typeof(BookstoreDbContext))]
-    [Migration("20251107124217_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20251109201841_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -690,6 +690,56 @@ namespace BookstoreApplication.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BookstoreApplication.Models.Issue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvailableCopies")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CoverDate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IssueNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("VolumeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VolumeId");
+
+                    b.ToTable("Issues");
+                });
+
             modelBuilder.Entity("BookstoreApplication.Models.Publisher", b =>
                 {
                     b.Property<int>("Id")
@@ -699,7 +749,6 @@ namespace BookstoreApplication.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -707,7 +756,6 @@ namespace BookstoreApplication.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Website")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -808,6 +856,49 @@ namespace BookstoreApplication.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Volume", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Aliases")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SiteUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartYear")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublisherId");
+
+                    b.ToTable("Volume");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -994,6 +1085,28 @@ namespace BookstoreApplication.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("BookstoreApplication.Models.Issue", b =>
+                {
+                    b.HasOne("BookstoreApplication.Models.Volume", "Volume")
+                        .WithMany("Issues")
+                        .HasForeignKey("VolumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Volume");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Volume", b =>
+                {
+                    b.HasOne("BookstoreApplication.Models.Publisher", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Publisher");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1053,6 +1166,11 @@ namespace BookstoreApplication.Migrations
             modelBuilder.Entity("BookstoreApplication.Models.Award", b =>
                 {
                     b.Navigation("AuthorAwards");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Volume", b =>
+                {
+                    b.Navigation("Issues");
                 });
 #pragma warning restore 612, 618
         }

@@ -118,6 +118,10 @@ builder.Services.AddScoped<IBookServices, BookServices>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IComicVineConnection, ComicVineConnection>();
+builder.Services.AddHttpClient<IComicVineConnection, ComicVineConnection>();
+
+builder.Services.AddScoped<IComicService, ComicService>();
 
 builder.Services.AddScoped<IBooksRepo, BooksRepo>();
 builder.Services.AddScoped<IAuthorsRepo, AuthorsRepo>();
@@ -125,6 +129,7 @@ builder.Services.AddScoped<IPublishersRepo, PublishersRepo>();
 builder.Services.AddSingleton(new GoogleAuthService("417617350423-mqvt56d8v6brtpuhq7e9rvnem7i8u9gu.apps.googleusercontent.com"));
 builder.Services.AddSingleton(new JwtService(
     builder.Configuration));
+
 
 // ➡️ Serilog
 var logger = new LoggerConfiguration()

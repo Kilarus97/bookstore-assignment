@@ -106,7 +106,7 @@ namespace BookstoreApplication.Services
         {
             return new PublisherDto
             {
-                Id = publisher.Id,
+                Id = (int)publisher.Id,
                 Name = publisher.Name,
                 Address = publisher.Address,
                 Website = publisher.Website

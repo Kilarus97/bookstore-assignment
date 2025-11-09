@@ -14,6 +14,8 @@ namespace BookstoreApplication.Data
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Award> Awards { get; set; }
         public DbSet<AuthorAward> AuthorAwards { get; set; }
+        public DbSet<Issue> Issues { get; set; }
+        public DbSet<Volume> Volume { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,16 @@ namespace BookstoreApplication.Data
             modelBuilder.Entity<Author>()
                 .Property(a => a.DateOfBirth)
                 .HasColumnName("Birthday");
+
+            modelBuilder.Entity<Volume>()
+                .HasMany(v => v.Issues)
+                .WithOne(i => i.Volume)
+                .HasForeignKey(i => i.VolumeId);
+
+            modelBuilder.Entity<Volume>()
+                .HasOne(v => v.Publisher)
+                .WithMany()
+                .HasForeignKey(v => v.PublisherId);
 
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "2301d884-221a-4e7d-b509-0113dcc043e1", Name = "Editor", NormalizedName = "EDITOR" },
