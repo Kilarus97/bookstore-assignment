@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     [DbContext(typeof(BookstoreDbContext))]
-    [Migration("20251113144340_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20251113151713_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,9 @@ namespace BookstoreApplication.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FullName")
+                        .HasDatabaseName("IX_Author_FullName");
 
                     b.ToTable("Authors");
 

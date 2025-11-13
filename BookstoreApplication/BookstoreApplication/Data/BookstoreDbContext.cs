@@ -58,6 +58,10 @@ namespace BookstoreApplication.Data
                 .Property(a => a.DateOfBirth)
                 .HasColumnName("Birthday");
 
+            modelBuilder.Entity<Author>()
+                .HasIndex(a => a.FullName)
+                .HasDatabaseName("IX_Author_FullName");
+
             modelBuilder.Entity<Volume>()
                 .HasMany(v => v.Issues)
                 .WithOne(i => i.Volume)

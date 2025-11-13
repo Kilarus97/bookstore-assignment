@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -491,6 +491,11 @@ namespace BookstoreApplication.Migrations
                 name: "IX_AuthorAwardBridge_AwardId",
                 table: "AuthorAwardBridge",
                 column: "AwardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Author_FullName",
+                table: "Authors",
+                column: "FullName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_AuthorId",
