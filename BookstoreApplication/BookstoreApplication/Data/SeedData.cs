@@ -25,9 +25,11 @@ namespace BookstoreApplication.Data
                 await userManager.CreateAsync(editor1, "John123!");
             }
 
-            if (!await userManager.IsInRoleAsync(editor1, "Editor"))
+            var createdUser = await userManager.FindByNameAsync("John");
+
+            if (createdUser != null)
             {
-                await userManager.AddToRoleAsync(editor1, "Editor");
+                await userManager.AddToRoleAsync(createdUser, "Editor");
             }
 
             // Kreiranje drugog administratora
@@ -45,9 +47,11 @@ namespace BookstoreApplication.Data
                 await userManager.CreateAsync(editor2, "Jane123!");
             }
 
-            if (!await userManager.IsInRoleAsync(editor2, "Editor"))
+            var createdUser2 = await userManager.FindByNameAsync("Jane");
+
+            if (createdUser2 != null)
             {
-                await userManager.AddToRoleAsync(editor2, "Editor");
+                await userManager.AddToRoleAsync(createdUser2, "Editor");
             }
 
             // Kreiranje treceg administratora
@@ -56,7 +60,6 @@ namespace BookstoreApplication.Data
             {
                 editor3 = new User
                 {
-
                     UserName = "nick",
                     Email = "nick.smith@example.com",
                     Name = "Nick",
@@ -67,9 +70,11 @@ namespace BookstoreApplication.Data
             }
             ;
 
-            if (!await userManager.IsInRoleAsync(editor3, "Editor"))
+            var createdUser3 = await userManager.FindByNameAsync("Nick");
+
+            if (createdUser3 != null)
             {
-                await userManager.AddToRoleAsync(editor3, "Editor");
+                await userManager.AddToRoleAsync(createdUser3, "Editor");
             }
         }
     }

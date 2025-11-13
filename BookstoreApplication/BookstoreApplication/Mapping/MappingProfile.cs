@@ -20,7 +20,9 @@ namespace BookstoreApplication.Mapping
             CreateMap<Book, BookDto>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author != null ? src.Author.FullName : string.Empty))
                 .ForMember(dest => dest.Publisher, opt => opt.MapFrom(src => src.Publisher != null ? src.Publisher.Name : string.Empty))
-                .ForMember(dest => dest.YearsAgoPublished, opt => opt.MapFrom(src => DateTime.UtcNow.Year - src.PublishedDate.Year));
+                .ForMember(dest => dest.YearsAgoPublished, opt => opt.MapFrom(src => DateTime.UtcNow.Year - src.PublishedDate.Year))
+                .ForMember(dest => dest.AvarageRating, opt => opt.MapFrom(src => src.AverageRating));
+
             CreateMap<Author, AuthorDto>();
             CreateMap<Award, AwardDto>();
             CreateMap<Publisher, PublisherDto>();
@@ -45,6 +47,14 @@ namespace BookstoreApplication.Mapping
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.VolumeId, opt => opt.Ignore())
             .ForMember(dest => dest.Volume, opt => opt.Ignore());
+
+            CreateMap<Issue, IssueDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.IssueNumber, opt => opt.MapFrom(src => src.IssueNumber))
+            .ForMember(dest => dest.CoverDate, opt => opt.MapFrom(src => src.CoverDate))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.Image, opt => opt.MapFrom(src => new ImageDto { OriginalUrl = src.ImageUrl }))
+            .ForMember(dest => dest.Volume, opt => opt.MapFrom(src => src.Volume != null ? new VolumeDto { Id = src.Volume.ExternalId, Name = src.Volume.Name } : null));
 
             CreateMap<VolumeDto, Volume>()
             .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id))

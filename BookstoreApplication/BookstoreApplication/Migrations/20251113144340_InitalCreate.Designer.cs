@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     [DbContext(typeof(BookstoreDbContext))]
-    [Migration("20251109201841_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251113144340_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -262,6 +262,9 @@ namespace BookstoreApplication.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasColumnType("text");
@@ -292,6 +295,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 1,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780001",
                             PageCount = 320,
                             PublishedDate = new DateTime(1945, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -302,6 +306,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 2,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780002",
                             PageCount = 210,
                             PublishedDate = new DateTime(1954, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -312,6 +317,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 3,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780003",
                             PageCount = 180,
                             PublishedDate = new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -322,6 +328,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 4,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780004",
                             PageCount = 200,
                             PublishedDate = new DateTime(1968, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -332,6 +339,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 5,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780005",
                             PageCount = 150,
                             PublishedDate = new DateTime(1930, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -342,6 +350,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 6,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780006",
                             PageCount = 120,
                             PublishedDate = new DateTime(1914, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -352,6 +361,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 7,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780007",
                             PageCount = 400,
                             PublishedDate = new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -362,6 +372,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 8,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780008",
                             PageCount = 100,
                             PublishedDate = new DateTime(1919, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -372,6 +383,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 9,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780009",
                             PageCount = 130,
                             PublishedDate = new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -382,6 +394,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 10,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780010",
                             PageCount = 140,
                             PublishedDate = new DateTime(1906, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -392,6 +405,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 11,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780011",
                             PageCount = 160,
                             PublishedDate = new DateTime(1924, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -402,6 +416,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 12,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780012",
                             PageCount = 110,
                             PublishedDate = new DateTime(1936, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -412,6 +427,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 13,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780013",
                             PageCount = 280,
                             PublishedDate = new DateTime(2017, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -422,6 +438,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 14,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780014",
                             PageCount = 450,
                             PublishedDate = new DateTime(1986, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -432,6 +449,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 15,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780015",
                             PageCount = 220,
                             PublishedDate = new DateTime(1962, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -442,6 +460,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 16,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780016",
                             PageCount = 310,
                             PublishedDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -452,6 +471,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 17,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780017",
                             PageCount = 260,
                             PublishedDate = new DateTime(1953, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -462,6 +482,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 18,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780018",
                             PageCount = 500,
                             PublishedDate = new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -472,6 +493,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 19,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780019",
                             PageCount = 340,
                             PublishedDate = new DateTime(1966, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -482,6 +504,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 20,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780020",
                             PageCount = 180,
                             PublishedDate = new DateTime(1999, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -492,6 +515,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 21,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780021",
                             PageCount = 96,
                             PublishedDate = new DateTime(1943, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -502,6 +526,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 22,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780022",
                             PageCount = 240,
                             PublishedDate = new DateTime(1976, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -512,6 +537,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 23,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780023",
                             PageCount = 360,
                             PublishedDate = new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -522,6 +548,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 24,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780024",
                             PageCount = 290,
                             PublishedDate = new DateTime(2009, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -532,6 +559,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 25,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780025",
                             PageCount = 270,
                             PublishedDate = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -542,6 +570,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 26,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780026",
                             PageCount = 230,
                             PublishedDate = new DateTime(1933, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -552,6 +581,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 27,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780027",
                             PageCount = 190,
                             PublishedDate = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -562,6 +592,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 28,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780028",
                             PageCount = 210,
                             PublishedDate = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -572,6 +603,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 29,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780029",
                             PageCount = 170,
                             PublishedDate = new DateTime(1995, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -582,6 +614,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 30,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780030",
                             PageCount = 150,
                             PublishedDate = new DateTime(1988, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -592,6 +625,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 31,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780031",
                             PageCount = 220,
                             PublishedDate = new DateTime(1992, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -602,6 +636,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 32,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780032",
                             PageCount = 260,
                             PublishedDate = new DateTime(2005, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -612,6 +647,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 33,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780033",
                             PageCount = 240,
                             PublishedDate = new DateTime(1998, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -622,6 +658,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 34,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780034",
                             PageCount = 180,
                             PublishedDate = new DateTime(2010, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -632,6 +669,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 35,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780035",
                             PageCount = 300,
                             PublishedDate = new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -642,6 +680,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 36,
                             AuthorId = 1,
+                            AverageRating = 0.0,
                             ISBN = "9780036",
                             PageCount = 210,
                             PublishedDate = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -652,6 +691,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 37,
                             AuthorId = 2,
+                            AverageRating = 0.0,
                             ISBN = "9780037",
                             PageCount = 190,
                             PublishedDate = new DateTime(2007, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -662,6 +702,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 38,
                             AuthorId = 3,
+                            AverageRating = 0.0,
                             ISBN = "9780038",
                             PageCount = 160,
                             PublishedDate = new DateTime(1996, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -672,6 +713,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 39,
                             AuthorId = 4,
+                            AverageRating = 0.0,
                             ISBN = "9780039",
                             PageCount = 280,
                             PublishedDate = new DateTime(2012, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -682,6 +724,7 @@ namespace BookstoreApplication.Migrations
                         {
                             Id = 40,
                             AuthorId = 5,
+                            AverageRating = 0.0,
                             ISBN = "9780040",
                             PageCount = 250,
                             PublishedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
@@ -1047,6 +1090,37 @@ namespace BookstoreApplication.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("BookstoreApplication.Models.AuthorAward", b =>
                 {
                     b.HasOne("BookstoreApplication.Models.Author", "Author")
@@ -1158,6 +1232,17 @@ namespace BookstoreApplication.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Review", b =>
+                {
+                    b.HasOne("BookstoreApplication.Models.Book", "Book")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("BookstoreApplication.Models.Author", b =>
                 {
                     b.Navigation("AuthorAwards");
@@ -1166,6 +1251,11 @@ namespace BookstoreApplication.Migrations
             modelBuilder.Entity("BookstoreApplication.Models.Award", b =>
                 {
                     b.Navigation("AuthorAwards");
+                });
+
+            modelBuilder.Entity("BookstoreApplication.Models.Book", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("BookstoreApplication.Models.Volume", b =>

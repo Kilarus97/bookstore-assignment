@@ -59,6 +59,19 @@ public class ComicService : IComicService
         if (issueDto == null)
             throw new Exception("Issue not found in external API");
 
+        // ✅ Proveri da li već postoji
+        var existingIssue = await _context.Issues
+            .FirstOrDefaultAsync(i => i.ExternalId == dto.ExternalId);
+
+        if (existingIssue != null)
+        {
+            // Ako postoji, možeš da ažuriraš podatke ili samo vratiš Id
+            existingIssue.Price = dto.Price;
+            existingIssue.AvailableCopies = dto.AvailableCopies;
+            await _context.SaveChangesAsync();
+            return existingIssue.Id;
+        }
+
         // Mapiraj osnovne podatke iz IssueDto
         var issue = _mapper.Map<Issue>(issueDto);
         issue.ExternalId = dto.ExternalId;
@@ -67,16 +80,18 @@ public class ComicService : IComicService
         issue.CreatedAt = DateTime.UtcNow;
 
         // Proveri da li volume već postoji
-        var existingVolume = await _context.Volume.FirstOrDefaultAsync(v => v.ExternalId == issueDto.Volume.Id);
+        var existingVolume = await _context.Volume
+            .FirstOrDefaultAsync(v => v.ExternalId == issueDto.Volume.Id);
+
         if (existingVolume == null)
         {
-            // Povuci volume podatke iz API-ja
             var volumeDto = await SearchVolumeById(issueDto.Volume.Id);
             var volume = _mapper.Map<Volume>(volumeDto);
             volume.ExternalId = issueDto.Volume.Id;
 
-            // Proveri da li publisher postoji
-            var publisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == volumeDto.Publisher.Name);
+            var publisher = await _context.Publishers
+                .FirstOrDefaultAsync(p => p.Name == volumeDto.Publisher.Name);
+
             if (publisher == null)
             {
                 publisher = _mapper.Map<Publisher>(volumeDto.Publisher);
@@ -101,7 +116,14 @@ public class ComicService : IComicService
     }
 
 
-
+    public async Task<List<IssueDto>> GetAllLocalIssuesAsync()
+    {
+        var issues = await _context.Issues
+            .Include(i => i.Volume)
+            .Include(i => i.Volume.Publisher)
+            .ToListAsync();
+        return _mapper.Map<List<IssueDto>>(issues);
+    }
 
 
 

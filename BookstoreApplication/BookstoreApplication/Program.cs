@@ -118,11 +118,15 @@ builder.Services.AddScoped<IBookServices, BookServices>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IComicVineConnection, ComicVineConnection>();
 builder.Services.AddHttpClient<IComicVineConnection, ComicVineConnection>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 builder.Services.AddScoped<IComicService, ComicService>();
 
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IBooksRepo, BooksRepo>();
 builder.Services.AddScoped<IAuthorsRepo, AuthorsRepo>();
 builder.Services.AddScoped<IPublishersRepo, PublishersRepo>();

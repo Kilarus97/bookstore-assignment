@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -241,6 +241,7 @@ namespace BookstoreApplication.Migrations
                     PageCount = table.Column<int>(type: "integer", nullable: false),
                     PublishedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ISBN = table.Column<string>(type: "text", nullable: false),
+                    AverageRating = table.Column<double>(type: "double precision", nullable: false),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
                     PublisherId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -283,6 +284,29 @@ namespace BookstoreApplication.Migrations
                         name: "FK_Volume_Publishers_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publishers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    BookId = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -381,49 +405,49 @@ namespace BookstoreApplication.Migrations
 
             migrationBuilder.InsertData(
                 table: "Books",
-                columns: new[] { "Id", "AuthorId", "ISBN", "PageCount", "PublishedDate", "PublisherId", "Title" },
+                columns: new[] { "Id", "AuthorId", "AverageRating", "ISBN", "PageCount", "PublishedDate", "PublisherId", "Title" },
                 values: new object[,]
                 {
-                    { 1, 1, "9780001", 320, new DateTime(1945, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Na Drini ćuprija" },
-                    { 2, 1, "9780002", 210, new DateTime(1954, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Prokleta avlija" },
-                    { 3, 2, "9780003", 180, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Enciklopedija mrtvih" },
-                    { 4, 2, "9780004", 200, new DateTime(1968, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Bašta, pepeo" },
-                    { 5, 3, "9780005", 150, new DateTime(1930, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Analitički trenuci" },
-                    { 6, 3, "9780006", 120, new DateTime(1914, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Pisma iz Norveške" },
-                    { 7, 4, "9780007", 400, new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Seobe" },
-                    { 8, 4, "9780008", 100, new DateTime(1919, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Lirika Itake" },
-                    { 9, 5, "9780009", 130, new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Gospođa ministarka" },
-                    { 10, 5, "9780010", 140, new DateTime(1906, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Narodni poslanik" },
-                    { 11, 5, "9780011", 160, new DateTime(1924, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Autobiografija" },
-                    { 12, 5, "9780012", 110, new DateTime(1936, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Dr" },
-                    { 13, 1, "9780013", 280, new DateTime(2017, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Senke nad Balkanom" },
-                    { 14, 2, "9780014", 450, new DateTime(1986, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zlatno runo" },
-                    { 15, 3, "9780015", 220, new DateTime(1962, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Noć u Lisabonu" },
-                    { 16, 1, "9780016", 310, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Tvrđava" },
-                    { 17, 2, "9780017", 260, new DateTime(1953, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Koreni" },
-                    { 18, 3, "9780018", 500, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Vreme smrti" },
-                    { 19, 4, "9780019", 340, new DateTime(1966, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Derviš i smrt" },
-                    { 20, 5, "9780020", 180, new DateTime(1999, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Čarobna frula" },
-                    { 21, 1, "9780021", 96, new DateTime(1943, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Mali princ" },
-                    { 22, 2, "9780022", 240, new DateTime(1976, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Znakovi pored puta" },
-                    { 23, 3, "9780023", 360, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Besnilo" },
-                    { 24, 4, "9780024", 290, new DateTime(2009, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Konstantinovo raskršće" },
-                    { 25, 5, "9780025", 270, new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Knjiga o Milutinu" },
-                    { 26, 1, "9780026", 230, new DateTime(1933, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Legenda o Ali Paši" },
-                    { 27, 2, "9780027", 190, new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Velika tajna" },
-                    { 28, 3, "9780028", 210, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Putnik" },
-                    { 29, 4, "9780029", 170, new DateTime(1995, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zemlja snova" },
-                    { 30, 5, "9780030", 150, new DateTime(1988, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Tišina" },
-                    { 31, 1, "9780031", 220, new DateTime(1992, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Oluja" },
-                    { 32, 2, "9780032", 260, new DateTime(2005, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zaboravljeni grad" },
-                    { 33, 3, "9780033", 240, new DateTime(1998, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Dolina senki" },
-                    { 34, 4, "9780034", 180, new DateTime(2010, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Pogled u beskraj" },
-                    { 35, 5, "9780035", 300, new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Kamen mudrosti" },
-                    { 36, 1, "9780036", 210, new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Plavi horizonti" },
-                    { 37, 2, "9780037", 190, new DateTime(2007, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Tajna šifre" },
-                    { 38, 3, "9780038", 160, new DateTime(1996, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zvezdana prašina" },
-                    { 39, 4, "9780039", 280, new DateTime(2012, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Okean tišine" },
-                    { 40, 5, "9780040", 250, new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Grad bez imena" }
+                    { 1, 1, 0.0, "9780001", 320, new DateTime(1945, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Na Drini ćuprija" },
+                    { 2, 1, 0.0, "9780002", 210, new DateTime(1954, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Prokleta avlija" },
+                    { 3, 2, 0.0, "9780003", 180, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Enciklopedija mrtvih" },
+                    { 4, 2, 0.0, "9780004", 200, new DateTime(1968, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Bašta, pepeo" },
+                    { 5, 3, 0.0, "9780005", 150, new DateTime(1930, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Analitički trenuci" },
+                    { 6, 3, 0.0, "9780006", 120, new DateTime(1914, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Pisma iz Norveške" },
+                    { 7, 4, 0.0, "9780007", 400, new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Seobe" },
+                    { 8, 4, 0.0, "9780008", 100, new DateTime(1919, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Lirika Itake" },
+                    { 9, 5, 0.0, "9780009", 130, new DateTime(1929, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Gospođa ministarka" },
+                    { 10, 5, 0.0, "9780010", 140, new DateTime(1906, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Narodni poslanik" },
+                    { 11, 5, 0.0, "9780011", 160, new DateTime(1924, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Autobiografija" },
+                    { 12, 5, 0.0, "9780012", 110, new DateTime(1936, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Dr" },
+                    { 13, 1, 0.0, "9780013", 280, new DateTime(2017, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Senke nad Balkanom" },
+                    { 14, 2, 0.0, "9780014", 450, new DateTime(1986, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zlatno runo" },
+                    { 15, 3, 0.0, "9780015", 220, new DateTime(1962, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Noć u Lisabonu" },
+                    { 16, 1, 0.0, "9780016", 310, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Tvrđava" },
+                    { 17, 2, 0.0, "9780017", 260, new DateTime(1953, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Koreni" },
+                    { 18, 3, 0.0, "9780018", 500, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Vreme smrti" },
+                    { 19, 4, 0.0, "9780019", 340, new DateTime(1966, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Derviš i smrt" },
+                    { 20, 5, 0.0, "9780020", 180, new DateTime(1999, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Čarobna frula" },
+                    { 21, 1, 0.0, "9780021", 96, new DateTime(1943, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Mali princ" },
+                    { 22, 2, 0.0, "9780022", 240, new DateTime(1976, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Znakovi pored puta" },
+                    { 23, 3, 0.0, "9780023", 360, new DateTime(1983, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Besnilo" },
+                    { 24, 4, 0.0, "9780024", 290, new DateTime(2009, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Konstantinovo raskršće" },
+                    { 25, 5, 0.0, "9780025", 270, new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Knjiga o Milutinu" },
+                    { 26, 1, 0.0, "9780026", 230, new DateTime(1933, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Legenda o Ali Paši" },
+                    { 27, 2, 0.0, "9780027", 190, new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Velika tajna" },
+                    { 28, 3, 0.0, "9780028", 210, new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Putnik" },
+                    { 29, 4, 0.0, "9780029", 170, new DateTime(1995, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zemlja snova" },
+                    { 30, 5, 0.0, "9780030", 150, new DateTime(1988, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Tišina" },
+                    { 31, 1, 0.0, "9780031", 220, new DateTime(1992, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Oluja" },
+                    { 32, 2, 0.0, "9780032", 260, new DateTime(2005, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zaboravljeni grad" },
+                    { 33, 3, 0.0, "9780033", 240, new DateTime(1998, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Dolina senki" },
+                    { 34, 4, 0.0, "9780034", 180, new DateTime(2010, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Pogled u beskraj" },
+                    { 35, 5, 0.0, "9780035", 300, new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Kamen mudrosti" },
+                    { 36, 1, 0.0, "9780036", 210, new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Plavi horizonti" },
+                    { 37, 2, 0.0, "9780037", 190, new DateTime(2007, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Tajna šifre" },
+                    { 38, 3, 0.0, "9780038", 160, new DateTime(1996, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 3, "Zvezdana prašina" },
+                    { 39, 4, 0.0, "9780039", 280, new DateTime(2012, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Okean tišine" },
+                    { 40, 5, 0.0, "9780040", 250, new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Grad bez imena" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -484,6 +508,11 @@ namespace BookstoreApplication.Migrations
                 column: "VolumeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reviews_BookId",
+                table: "Reviews",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Volume_PublisherId",
                 table: "Volume",
                 column: "PublisherId");
@@ -511,10 +540,10 @@ namespace BookstoreApplication.Migrations
                 name: "AuthorAwardBridge");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "Issues");
 
             migrationBuilder.DropTable(
-                name: "Issues");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -526,10 +555,13 @@ namespace BookstoreApplication.Migrations
                 name: "Awards");
 
             migrationBuilder.DropTable(
-                name: "Authors");
+                name: "Volume");
 
             migrationBuilder.DropTable(
-                name: "Volume");
+                name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "Authors");
 
             migrationBuilder.DropTable(
                 name: "Publishers");

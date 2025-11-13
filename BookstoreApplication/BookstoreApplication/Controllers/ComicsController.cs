@@ -15,6 +15,7 @@ namespace BookstoreApplication.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "Editor")]
         [HttpGet("volumes")]
         public async Task<IActionResult> SearchVolumes([FromQuery] string name)
         {
@@ -22,6 +23,7 @@ namespace BookstoreApplication.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Editor")]
         [HttpGet("issues")]
         public async Task<IActionResult> GetIssues([FromQuery] int volumeId)
         {
@@ -29,7 +31,7 @@ namespace BookstoreApplication.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Editor")]
+        [Authorize(Roles = "Editor")]
         [HttpPost("create-local-issue")]
         public async Task<IActionResult> CreateLocalIssue([FromBody] CreateIssueDto dto)
         {
@@ -43,6 +45,13 @@ namespace BookstoreApplication.Controllers
             var issue = await _service.GetIssueByIdAsync(id);
             if (issue == null) return NotFound();
             return Ok(issue);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllLocalIssues()
+        {
+            var issues = await _service.GetAllLocalIssuesAsync();
+            return Ok(issues);
         }
 
     }

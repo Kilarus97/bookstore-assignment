@@ -16,6 +16,7 @@ namespace BookstoreApplication.Data
         public DbSet<AuthorAward> AuthorAwards { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<Volume> Volume { get; set; }
+        public DbSet<Review> Reviews { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,6 +67,15 @@ namespace BookstoreApplication.Data
                 .HasOne(v => v.Publisher)
                 .WithMany()
                 .HasForeignKey(v => v.PublisherId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews)
+                .HasForeignKey(r => r.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
 
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "2301d884-221a-4e7d-b509-0113dcc043e1", Name = "Editor", NormalizedName = "EDITOR" },

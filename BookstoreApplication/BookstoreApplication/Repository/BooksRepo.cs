@@ -60,6 +60,8 @@ namespace BookstoreApplication.Repository
             return await query.ToListAsync();
         }
 
+
+
         public async Task<List<Book>> GetAllBooksAsync()
         {
             return await _context.Books
@@ -67,6 +69,15 @@ namespace BookstoreApplication.Repository
                 .Include(b => b.Publisher)
                 .ToListAsync();
         }
+
+        public async Task<List<Issue>> GetAllIssuesAsync()
+        {
+            return await _context.Issues
+                .Include(i => i.Volume)
+                .Include(i => i.Volume.Publisher)
+                .ToListAsync();
+        }
+
 
         public async Task<List<Book>> GetAllBookDetailsAsync()
         {

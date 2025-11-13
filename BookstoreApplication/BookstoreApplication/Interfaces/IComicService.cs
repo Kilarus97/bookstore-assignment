@@ -6,5 +6,6 @@
         public Task<List<IssueDto>> GetIssues(int volumeId);
         Task<int> CreateIssueFromExternalAsync(CreateIssueDto dto);
         Task<IssueDto?> GetIssueByIdAsync(int id);
+        Task<List<IssueDto>> GetAllLocalIssuesAsync();
     }
 }
