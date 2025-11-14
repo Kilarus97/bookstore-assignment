@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,15 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 6;
 });
+
+//Mongo register
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+
+var mongoSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+var client = new MongoClient(mongoSettings.ConnectionString);
+builder.Services.AddSingleton<IMongoClient>(client);
+builder.Services.AddScoped(s => client.GetDatabase(mongoSettings.DatabaseName));
+
 
 builder.Services.AddAuthentication(options =>
 { // Naglašavamo da koristimo JWT
@@ -121,6 +131,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IComicVineConnection, ComicVineConnection>();
 builder.Services.AddHttpClient<IComicVineConnection, ComicVineConnection>();
+builder.Services.AddScoped<IComicRepository, ComicRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 

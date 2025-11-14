@@ -1,26 +1,28 @@
 ﻿using System.Text.Json;
 using AutoMapper;
-using BookstoreApplication.Data;
 using BookstoreApplication.Interfaces;
 using BookstoreApplication.Models;
-using Google;
-using Microsoft.EntityFrameworkCore;
 
 public class ComicService : IComicService
 {
     private readonly IComicVineConnection _connection;
     private readonly IConfiguration _config;
-    private readonly BookstoreDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IComicRepository _comicRepo;
 
-    public ComicService(IComicVineConnection connection, IConfiguration config, BookstoreDbContext context , IMapper mapper)
+    public ComicService(
+        IComicVineConnection connection,
+        IConfiguration config,
+        IMapper mapper,
+        IComicRepository comicRepo)
     {
         _connection = connection;
         _config = config;
-        _context = context;
         _mapper = mapper;
+        _comicRepo = comicRepo;
     }
 
+    // ✅ ostaje isto ime
     public async Task<List<VolumeDto>> SearchVolumes(string name)
     {
         var baseUrl = _config["ComicVineBaseUrl"];
@@ -28,11 +30,11 @@ public class ComicService : IComicService
         var url = $"{baseUrl}/volumes/?api_key={apiKey}&format=json&filter=name:{name}";
 
         var json = await _connection.Get(url);
-        Console.WriteLine(json);
         var volumes = JsonSerializer.Deserialize<List<VolumeDto>>(json);
-        return volumes;
+        return volumes ?? new List<VolumeDto>();
     }
 
+    // ✅ ostaje isto ime
     public async Task<VolumeDto?> SearchVolumeById(int externalVolumeId)
     {
         var baseUrl = _config["ComicVineBaseUrl"];
@@ -40,13 +42,11 @@ public class ComicService : IComicService
         var url = $"{baseUrl}/volume/4050-{externalVolumeId}/?api_key={apiKey}&format=json";
 
         var json = await _connection.Get(url);
-        Console.WriteLine(json);
-
         var volume = JsonSerializer.Deserialize<VolumeDto>(json);
         return volume;
     }
 
-
+    // ✅ ostaje isto ime
     public async Task<int> CreateIssueFromExternalAsync(CreateIssueDto dto)
     {
         var baseUrl = _config["ComicVineBaseUrl"];
@@ -59,75 +59,44 @@ public class ComicService : IComicService
         if (issueDto == null)
             throw new Exception("Issue not found in external API");
 
-        // ✅ Proveri da li već postoji
-        var existingIssue = await _context.Issues
-            .FirstOrDefaultAsync(i => i.ExternalId == dto.ExternalId);
-
-        if (existingIssue != null)
+        // Mapiraj IssueDto u ComicDocument
+        var comicDoc = new ComicDocument
         {
-            // Ako postoji, možeš da ažuriraš podatke ili samo vratiš Id
-            existingIssue.Price = dto.Price;
-            existingIssue.AvailableCopies = dto.AvailableCopies;
-            await _context.SaveChangesAsync();
-            return existingIssue.Id;
-        }
+            ComicVineId = issueDto.Id,
+            Title = issueDto.Name ?? "Unknown",
+            Description = issueDto.Description,
+            IssueNumber = issueDto.IssueNumber,
+            ImageUrl = issueDto.Image?.OriginalUrl,
+            FetchedAt = DateTime.UtcNow
+        };
 
-        // Mapiraj osnovne podatke iz IssueDto
-        var issue = _mapper.Map<Issue>(issueDto);
-        issue.ExternalId = dto.ExternalId;
-        issue.Price = dto.Price;
-        issue.AvailableCopies = dto.AvailableCopies;
-        issue.CreatedAt = DateTime.UtcNow;
+        if (DateTime.TryParse(issueDto.CoverDate, out var pd))
+            comicDoc.PublishDate = pd;
 
-        // Proveri da li volume već postoji
-        var existingVolume = await _context.Volume
-            .FirstOrDefaultAsync(v => v.ExternalId == issueDto.Volume.Id);
+        // Upsert u Mongo
+        await _comicRepo.UpsertAsync(comicDoc);
 
-        if (existingVolume == null)
-        {
-            var volumeDto = await SearchVolumeById(issueDto.Volume.Id);
-            var volume = _mapper.Map<Volume>(volumeDto);
-            volume.ExternalId = issueDto.Volume.Id;
-
-            var publisher = await _context.Publishers
-                .FirstOrDefaultAsync(p => p.Name == volumeDto.Publisher.Name);
-
-            if (publisher == null)
-            {
-                publisher = _mapper.Map<Publisher>(volumeDto.Publisher);
-                _context.Publishers.Add(publisher);
-                await _context.SaveChangesAsync();
-            }
-
-            volume.PublisherId = (int)publisher.Id;
-            _context.Volume.Add(volume);
-            await _context.SaveChangesAsync();
-
-            issue.VolumeId = volume.Id;
-        }
-        else
-        {
-            issue.VolumeId = existingVolume.Id;
-        }
-
-        _context.Issues.Add(issue);
-        await _context.SaveChangesAsync();
-        return issue.Id;
+        // Vraćamo external id (jer nemamo SQL Id)
+        return dto.ExternalId;
     }
 
-
+    // ✅ ostaje isto ime
     public async Task<List<IssueDto>> GetAllLocalIssuesAsync()
     {
-        var issues = await _context.Issues
-            .Include(i => i.Volume)
-            .Include(i => i.Volume.Publisher)
-            .ToListAsync();
-        return _mapper.Map<List<IssueDto>>(issues);
+        var docs = await _comicRepo.GetAllAsync(1000);
+        return docs.Select(d => new IssueDto
+        {
+            Id = (int)d.ComicVineId,
+            Name = d.Title,
+            IssueNumber = d.IssueNumber,
+            CoverDate = d.PublishDate?.ToString("yyyy-MM-dd"),
+            Description = d.Description,
+            Image = new ImageDto { OriginalUrl = d.ImageUrl },
+            Volume = new VolumeDto { Id = 0, Name = "" } // prilagodi ako želiš volume podatke
+        }).ToList();
     }
 
-
-
-
+    // ✅ ostaje isto ime
     public async Task<List<IssueDto>> GetIssues(int volumeId)
     {
         var baseUrl = _config["ComicVineBaseUrl"];
@@ -136,32 +105,24 @@ public class ComicService : IComicService
 
         var json = await _connection.Get(url);
         var issues = JsonSerializer.Deserialize<List<IssueDto>>(json);
-        return issues;
+        return issues ?? new List<IssueDto>();
     }
 
-
-
+    // ✅ ostaje isto ime
     public async Task<IssueDto?> GetIssueByIdAsync(int id)
     {
-        var issue = await _context.Issues
-            .Include(i => i.Volume)
-            .FirstOrDefaultAsync(i => i.Id == id);
-
-        if (issue == null) return null;
+        var doc = await _comicRepo.GetByComicVineIdAsync(id);
+        if (doc == null) return null;
 
         return new IssueDto
         {
-            Id = issue.Id,
-            Name = issue.Name,
-            IssueNumber = issue.IssueNumber,
-            CoverDate = issue.CoverDate,
-            Description = issue.Description,
-            Image = new ImageDto { OriginalUrl = issue.ImageUrl },
-            Volume = new VolumeDto
-            {
-                Id = issue.Volume.ExternalId,
-                Name = issue.Volume.Name
-            }
+            Id = (int)doc.ComicVineId,
+            Name = doc.Title,
+            IssueNumber = doc.IssueNumber,
+            CoverDate = doc.PublishDate?.ToString("yyyy-MM-dd"),
+            Description = doc.Description,
+            Image = new ImageDto { OriginalUrl = doc.ImageUrl },
+            Volume = new VolumeDto { Id = 0, Name = "" }
         };
     }
 }
